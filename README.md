@@ -54,7 +54,7 @@ To run the tests:
 
 ## TODO
 
-- [] make it work with CySparse
-- [] create documentation
-- [] add tests
-- [] make it work for single precision (cygenja?)
+- [ ] make it work with CySparse
+- [ ] create documentation
+- [ ] add tests
+- [ ] make it work for single precision (cygenja?)
