@@ -1,7 +1,2 @@
-"""
-Python interface to some HSL scaling routines.
-"""
+from hsl.scaling._mc29 import mc29ad
 
-from scaling import *
-
-__all__ = filter(lambda s:not s.startswith('_'), dir())
