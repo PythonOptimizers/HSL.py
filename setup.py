@@ -107,18 +107,6 @@ if files_exist(ma57_sources):
         extra_info=blas_info,
         )
 
-    cyma57_src = ['ma57_lib.c', 'hsl_alloc.c', '_cyma57.c']
-    cyma57_sources = [os.path.join('hsl', 'solvers', 'src', name) for name in cyma57_src]
-
-    config.add_extension(
-        name='solvers._cyma57',
-        sources=cyma57_sources,
-        libraries=[metis_lib, 'hsl_ma57'],
-        library_dirs=[metis_dir],
-        include_dirs=[cysparse_inc, 'include', os.path.join('hsl', 'solvers', 'src')],
-        extra_info=blas_info,
-        )
-
 
 mc29_sources = [os.path.join(hsl_dir, 'mc29d', 'mc29d.f'),
                 os.path.join('hsl', 'scaling', 'src', 'mc29.pyf')]
