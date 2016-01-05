@@ -3,8 +3,8 @@
 # Example usage: python demo_ma27.py file1.mtx ... fileN.mtx
 # where each fileK.mtx is in MatrixMarket format.
 
-from hsl.solvers.pyma27 import PyMa27Context as LBLContext
-#from nlpy.linalg.pyma57 import PyMa57Context as LBLContext
+from hsl.solvers.pyma27 import PyMa27Solver as LBLContext
+# from nlpy.linalg.pyma57 import PyMa57Context as LBLContext
 from pysparse import spmatrix
 from nlpy.tools import norms
 from nlpy.tools.timing import cputime
@@ -116,4 +116,4 @@ if __name__ == '__main__':
         if probname[-4:] == '.mtx': probname = probname[:-4]
         sys.stdout.write(res_fmt % (probname,relres,nr,nr1,t_an,t_sl,neig))
     sys.stderr.write('-' * lhead + '\n')
-        
+

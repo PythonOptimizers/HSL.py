@@ -7,11 +7,12 @@ from pysparse.sparse.pysparseMatrix import PysparseMatrix
 from sils import Sils
 from hsl.solvers import _pyma57
 
-class PyMa57Context( Sils ):
 
-    def __init__( self, A, factorize=True, **kwargs ):
+class PyMa57Solver(Sils):
+
+    def __init__(self, A, factorize=True, **kwargs):
         """
-        Create a PyMa57Context object representing a context to solve
+        Create a PyMa57Solver object representing a context to solve
         the square symmetric linear system of equations
 
             A x = b.
@@ -32,8 +33,8 @@ class PyMa57Context( Sils ):
         (positive or negative) definite, or symmetric quasi-definite (sqd).
         SQD matrices have the general form
 
-            [ E  Gt ]
-            [ G  -F ]
+            [ E  solvert ]
+            [ solver  -F ]
 
         where both E and F are positive definite. As a special case, positive
         definite matrices and negative definite matrices are sqd. SQD matrices
@@ -48,7 +49,7 @@ class PyMa57Context( Sils ):
 
         >>> import pyma57
         >>> import numpy
-        >>> P = pyma57.PyMa57Context(A)
+        >>> P = pyma57.PyMa57Solver(A)
         >>> P.solve(rhs, get_resid=True)
         >>> print numpy.linalg.norm(P.residual)
 
@@ -81,7 +82,7 @@ class PyMa57Context( Sils ):
         else:
             thisA = A
 
-        Sils.__init__( self, thisA, **kwargs )
+        Sils.__init__(self, thisA, **kwargs)
 
         # Statistics on A
         self.nzFact = 0      # Number of nonzeros in factors
@@ -93,11 +94,11 @@ class PyMa57Context( Sils ):
         self.rank = 0        # Matrix rank
 
         # Factors
-        #self.L = spmatrix.ll_mat( self.n, self.n, 0 )
-        #self.B = spmatrix.ll_mat_sym( self.n, 0 )
+        # self.L = spmatrix.ll_mat(self.n, self.n, 0)
+        # self.B = spmatrix.ll_mat_sym(self.n, 0)
 
         # Analyze and factorize matrix
-        self.context = _pyma57.analyze( thisA, self.sqd )
+        self.context = _pyma57.analyze(thisA, self.sqd)
         self.factorized = False
         if factorize: self.factorize(thisA)
         return
@@ -126,18 +127,18 @@ class PyMa57Context( Sils ):
         self.isFullRank = (self.rank == self.n)
         return
 
-    def solve( self, b, get_resid = True ):
+    def solve(self, b, get_resid=True):
         """
         solve(b) solves the linear system of equations Ax = b.
         The solution will be found in self.x and residual in
         self.residual.
         """
-        self.context.ma57( b, self.x, self.residual, get_resid )
+        self.context.ma57(b, self.x, self.residual, get_resid)
         return None
 
-    def refine( self, b, nitref = 3, **kwargs ):
+    def refine(self, b, nitref=3, **kwargs):
         """
-        refine( b, nitref ) performs iterative refinement if necessary
+        refine(b, nitref) performs iterative refinement if necessary
         until the scaled residual norm ||b-Ax||/(1+||b||) falls below the
         threshold 'tol' or until nitref steps are taken.
         Make sure you have called solve() with the same right-hand
@@ -153,7 +154,7 @@ class PyMa57Context( Sils ):
          self.relRes) = self.context.refine(self.x, self.residual, b, nitref)
         return None
 
-    def fetch_perm( self ):
+    def fetch_perm(self):
         """
         fetch_perm() returns the permutation vector p used
         to compute the factorization of A. Rows and columns
@@ -167,7 +168,7 @@ class PyMa57Context( Sils ):
         """
         return self.context.fetchperm()
 
-#     def fetch_lb( self ):
+#     def fetch_lb(self):
 #         """
 #         fetch_lb() returns the factors L and B of A such that
 
@@ -176,9 +177,9 @@ class PyMa57Context( Sils ):
 #         where P is as in fetch_perm(), L is unit upper
 #         triangular and B is block diagonal with 1x1 and 2x2
 #         blocks. Access to the factors is available as soon
-#         as a PyMa27Context has been instantiated.
+#         as a PyMa27Solver has been instantiated.
 #         """
-#         self.context.fetchlb( self.L, self.B )
+#         self.context.fetchlb(self.L, self.B)
 #         return None
 
 
@@ -188,41 +189,41 @@ if __name__ == '__main__':
     from pysparse.sparse import spmatrix
     import numpy as np
 
-    M = spmatrix.ll_mat_from_mtx( sys.argv[1] )
-    (m,n) = M.shape
+    M = spmatrix.ll_mat_from_mtx(sys.argv[1])
+    (m, n) = M.shape
     if m != n:
-        sys.stderr( 'Matrix must be square' )
+        sys.stderr('Matrix must be square')
         sys.exit(1)
     if not M.issym:
-        sys.stderr( 'Matrix must be symmetric' )
+        sys.stderr('Matrix must be symmetric')
         sys.exit(2)
-    e = numpy.ones( n, 'd' )
-    rhs = numpy.zeros( n, 'd' )
-    M.matvec( e, rhs )
-    sys.stderr.write( ' Factorizing matrix... ' )
-    G = PyMa57Context( M )
+    e = numpy.ones(n, 'd')
+    rhs = numpy.zeros(n, 'd')
+    M.matvec(e, rhs)
+    sys.stderr.write(' Factorizing matrix... ')
+    solver = PyMa57Solver(M)
     w = sys.stderr.write
-    w( ' done\n' )
-    w( ' Matrix order = %d\n' % G.n )
-    w( ' Number of 2x2 pivots = %d\n' % G.n2x2pivots )
-    w( ' Number of negative eigenvalues = %d\n' % G.neig )
-    w( ' Matrix rank = %d\n' % G.rank )
-    w( ' Matrix is rank deficient : %s\n' % repr(G.isFullRank) )
-    w( ' Solving system... ' )
-    G.solve( rhs )
-    w( ' done\n' )
-    w( ' Residual = %-g\n' % np.linalg.norm(G.residual, ord=np.inf))
-    w( ' Relative error = %-g\n' % np.linalg.norm(G.x - e, ord=np.inf))
-    w( ' Performing iterative refinement if necessary... ' )
-    G.refine( rhs )
-    w( ' done\n' )
-    w( ' Computed estimates:\n' )
-    w( '   Condition number estimate: %8.1e\n' % G.cond )
-    w( '   First backward error estimate: %8.1e\n' % G.berr )
-    w( '   Second backward error estimate: %8.1e\n' % G.berr2 )
-    w( '   Direct error estimate: %8.1e\n' % G.dirError )
-    w( '   Infinity-norm of input matrix: %8.1e\n' % G.matNorm )
-    w( '   Infinity-norm of computed solution: %8.1e\n' % G.xNorm )
-    w( '   Relative residual: %8.1e\n' % G.relRes )
-    #w( ' Residual = %-g\n' % np.linalg.norm(G.residual, ord=np.inf))
-    w( ' Relative error = %-g\n' % np.linalg.norm(G.x - e, ord=np.inf))
+    w(' done\n')
+    w(' Matrix order = %d\n' % solver.n)
+    w(' Number of 2x2 pivots = %d\n' % solver.n2x2pivots)
+    w(' Number of negative eigenvalues = %d\n' % solver.neig)
+    w(' Matrix rank = %d\n' % solver.rank)
+    w(' Matrix is rank deficient : %s\n' % repr(solver.isFullRank))
+    w(' Solving system... ')
+    solver.solve(rhs)
+    w(' done\n')
+    w(' Residual = %-g\n' % np.linalg.norm(solver.residual, ord=np.inf))
+    w(' Relative error = %-g\n' % np.linalg.norm(solver.x - e, ord=np.inf))
+    w(' Performing iterative refinement if necessary... ')
+    solver.refine(rhs)
+    w(' done\n')
+    w(' Computed estimates:\n')
+    w('   Condition number estimate: %8.1e\n' % solver.cond)
+    w('   First backward error estimate: %8.1e\n' % solver.berr)
+    w('   Second backward error estimate: %8.1e\n' % solver.berr2)
+    w('   Direct error estimate: %8.1e\n' % solver.dirError)
+    w('   Infinity-norm of input matrix: %8.1e\n' % solver.matNorm)
+    w('   Infinity-norm of computed solution: %8.1e\n' % solver.xNorm)
+    w('   Relative residual: %8.1e\n' % solver.relRes)
+    # w(' Residual = %-g\n' % np.linalg.norm(solver.residual, ord=np.inf))
+    w(' Relative error = %-g\n' % np.linalg.norm(solver.x - e, ord=np.inf))
