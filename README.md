@@ -18,6 +18,7 @@ HSL.py provides interfaces to
 
 ## Dependencies
 In order to build previous interfaces, you **need** to provide source code from the [Harwell Subroutine Library](http://www.hsl.rl.ac.uk/).
+All required packages are available free of charge to academics.
 Just follow hyperlinks in upper section and fill the licence agreement on their website and you are done!
 
 HSL.py also depends on
