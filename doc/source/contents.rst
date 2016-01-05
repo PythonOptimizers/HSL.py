@@ -1,6 +1,6 @@
 
 ===================================
-:program:`CySparse`'s Users Manual
+:program:`HSL.py`'s Users Manual
 ===================================
 
 :Release: |version|
