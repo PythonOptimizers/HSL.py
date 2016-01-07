@@ -233,6 +233,16 @@ config.add_extension(
             name='solvers.src._cyma57_base_@index_type@_@element_type@',
             sources=cyma57_sources_@index_type@_@element_type@,
             **base_ext_params_@index_type@_@element_type@)
+
+retval = os.getcwd()
+os.chdir('hsl/solvers/src')
+call(['cython', '_cyma57_numpy_@index_type@_@element_type@.pyx'])
+os.chdir(retval)
+numpy_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
+config.add_extension(name="solvers.src._cyma57_numpy_@index_type@_@element_type@",
+                 sources=['hsl/solvers/src/_cyma57_numpy_@index_type@_@element_type@.c'],
+                 **numpy_ext_params_@index_type@_@element_type@)
+
   {% endfor %}
 {% endfor %}
 
@@ -241,7 +251,7 @@ if build_cysparse_ext:
   {% for element_type in type_list %}
     retval = os.getcwd()
     os.chdir('hsl/solvers/src')
-    call(['cython', '-I', cysparse_rootdir[0], '_cyma57_cysparse_INT32_FLOAT64.pyx'])
+    call(['cython', '-I', cysparse_rootdir[0], '_cyma57_cysparse_@index_type@_@element_type@'])
     os.chdir(retval)
     cysparse_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
     cysparse_ext_params_@index_type@_@element_type@['include_dirs'].extend(cysparse_rootdir)

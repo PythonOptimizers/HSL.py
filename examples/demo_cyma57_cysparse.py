@@ -19,7 +19,7 @@ rhs = A*e
 
 context = CySparseMA57Solver_INT32_FLOAT64(A.nrow, A.ncol, A.nnz)
 context.get_matrix_data(A)
-
+context.analyze()
 context.factorize()
 
 print 'Solve:'
