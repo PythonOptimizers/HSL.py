@@ -1,0 +1,43 @@
+from cysparse.sparse.ll_mat_matrices.ll_mat_@index@_t_@type@_t cimport LLSparseMatrix_@index@_t_@type@_t
+
+from hsl.solvers.src._cyma57_base_@index@_@type@ cimport BaseMA57Solver_@index@_@type@
+
+
+cdef class CySparseMA57Solver_@index@_@type@(BaseMA57Solver_@index@_@type@):
+    """
+    MA57 Context.
+
+    This version **only** deals with ``LLSparseMatrix_@index@_t_@type@_t`` objects.
+
+    A: A :class:`LLSparseMatrix_@index@_t_@type@_t` object.
+
+    Warning:
+        The solver takes a "snapshot" of the matrix ``A``, i.e. the results given by the solver are only
+        valid for the matrix given. If the matrix ``A`` changes aferwards, the results given by the solver won't
+        reflect this change.
+
+    """
+
+    def __cinit__(self, int m, int n, int nnz, verbose=False):
+        pass
+
+    cpdef get_matrix_data(self, LLSparseMatrix_@index@_t_@type@_t A):
+        """
+        Args:
+            A: :class:`LLSparseMatrix_@index@_t_@type@_t` object.
+
+        Note: we keep the same name for this method in all derived classes.
+        """
+        # Memory allocation of `irn`, `jcn` and `a` is done by `BaseMA57Solver`.
+
+{% if type in complex_list %} 
+        a_val = <@type@_t *> PyMem_Malloc(self.nnz * sizeof(@type@_t))
+        A.fill_triplet(self.data.irn, self.data.jcn, a_val)
+        self.a = <@type|generic_to_c_type@ *> a_val
+{% else %}
+        A.fill_triplet(self.data.irn, self.data.jcn, self.a)
+{% endif %}
+
+        # convert irn and jcn indices to Fortran format
+        self.index_to_fortran()
+

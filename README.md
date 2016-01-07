@@ -53,6 +53,11 @@ To run the tests:
 
 		python setup.py install. 
 
+## Compilation of cython files
+
+    cython -I ~/work/VirtualEnvs/nlpy_new/programs/cysparse/ _cyma57.pyx
+
+
 ## TODO
 
 - [ ] make it work with CySparse

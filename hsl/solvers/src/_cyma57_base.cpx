@@ -1,9 +1,9 @@
 from libc.stdio cimport FILE
-from cysparse.sparse.ll_mat_matrices.ll_mat_INT64_t_FLOAT64_t cimport LLSparseMatrix_INT64_t_FLOAT64_t
-from cpython cimport Py_INCREF, Py_DECREF
-from cpython.mem cimport PyMem_Malloc
+from cpython.mem cimport PyMem_Malloc, PyMem_Free
 cimport numpy as np
 import numpy as np
+
+cnp.import_array()
 
 cdef extern from "ma57.h":
     ctypedef struct Ma57_Data:
@@ -12,60 +12,59 @@ cdef extern from "ma57.h":
         int       info[40]
         double    cntl[5]
         double    rinfo[20]
-        int      *irn                 # Sparsity pattern    
+        int      *irn                 # Sparsity pattern
         int      *jcn
-        int       lkeep               # Pivot sequence      
-        int      *keep               
-        int      *iwork               # Wokspace array      
-        double   *fact                # Matrix factors      
-        int       lfact               # Size of array fact  
-        int      *ifact               # Indexing of factors 
-        int       lifact              # Size of array ifact 
+        int       lkeep               # Pivot sequence
+        int      *keep
+        int      *iwork               # Wokspace array
+        @type|generic_to_c_type@   *fact                # Matrix factors
+        int       lfact               # Size of array fact
+        int      *ifact               # Indexing of factors
+        int       lifact              # Size of array ifact
         int       job
-        int       nrhs                # Number of rhs       
-        double   *rhs                 # Right-hand sides    
-        int       lrhs                # Leading dim of rhs  
-        double   *work                # Real workspace      
-        int       lwork               # Size of array work  
-        int       calledcd            # Flag for MA57DD     
-        double   *x                   # Solution to Ax=rhs  
-        double   *residual            # = A x - rhs         
+        int       nrhs                # Number of rhs
+        @type|generic_to_c_type@   *rhs                 # Right-hand sides
+        int       lrhs                # Leading dim of rhs
+        @type|generic_to_c_type@   *work                # Real workspace
+        int       lwork               # Size of array work
+        int       calledcd            # Flag for MA57DD
+        @type|generic_to_c_type@   *x                   # Solution to Ax=rhs
+        @type|generic_to_c_type@   *residual            # = A x - rhs
         char      fetched             # Factors were fetched
                                       # Used for de-allocation
         int       rank, rankdef
-        FILE     *logfile             # File for log output 
+        FILE     *logfile             # File for log output
 
     cdef Ma57_Data *Ma57_Initialize( int nz, int n, FILE *logfile )
     cdef int  Ma57_Analyze( Ma57_Data *ma57 );
-    cdef int  Ma57_Factorize( Ma57_Data *ma57, double A[] );
-    cdef int  Ma57_Solve( Ma57_Data *ma57, double x[] );
-    cdef int  Ma57_Refine( Ma57_Data *ma57, double x[], double rhs[], double A[],
+    cdef int  Ma57_Factorize( Ma57_Data *ma57, @type|generic_to_c_type@ A[] );
+    cdef int  Ma57_Solve( Ma57_Data *ma57, @type|generic_to_c_type@ x[] );
+    cdef int  Ma57_Refine( Ma57_Data *ma57, @type|generic_to_c_type@ x[], @type|generic_to_c_type@ rhs[], @type|generic_to_c_type@ A[],
                            int maxitref, int job );
     cdef void Ma57_Finalize(      Ma57_Data *ma57 );
     cdef int  Process_Error_Code( Ma57_Data *ma57, int nerror );
 
 
-#cdef populate_ma57_struct_from_cysparse_llmat(LLSparseMatrix_INT64_t_FLOAT64_t A):
+cdef c_to_fortran_index_array(@index|generic_to_c_type@ * a, @index|generic_to_c_type@ a_size):
+    cdef:
+        @index|generic_to_c_type@ i
+
+    for i from 0 <= i < a_size:
+        a[i] += 1
 
 
-cdef class MA57Context:
-    def __cinit__(self, LLSparseMatrix_INT64_t_FLOAT64_t A):
+cdef class BaseMA57Solver_@index@_@type@:
+    def __cinit__(self, int m, int n, int nnz, verbose=False):
         cdef int elem, i, k
 
-        self.A = A
-        Py_INCREF(self.A)  # increase ref to object to avoid the user deleting it explicitly or implicitly
+        assert m == n
 
-        assert A.ncol == A.nrow
+        self.n = n
+        self.nnz = nnz
 
-        self.n = A.nrow
-        nz = A.nnz
+        self.data = Ma57_Initialize(self.nnz, self.n, NULL)
 
-        print 'nnz: ', nz
-
-        self.data = Ma57_Initialize(nz, self.n, NULL)
-
-        #TODO: use pointer instead of copy
-        self.a = <double *> PyMem_Malloc(nz * sizeof(double))
+        self.a = <@type|generic_to_c_type@ *> PyMem_Malloc(self.nnz * sizeof(@type|generic_to_c_type@))
 
         # Set pivot-for-stability threshold is matrix is SQD */
         if True: # sqd
@@ -74,26 +73,30 @@ cdef class MA57Context:
             self.data.cntl[1] = 1.0e-15;
             self.data.icntl[6] = 1;
 
-        # Get matrix in coordinate format. Adjust indices to be 1-based.
-        elem = 0;
-        for i in xrange(self.n):
-            k = A.root[i]
-            while k != -1: 
-                self.data.irn[elem] = i + 1
-                self.data.jcn[elem] = A.col[k] + 1
-                self.a[elem] = A.val[k] #TODO: use pointer instead of copy
-                # print 'elem: %d, a[elem]: %f'%(elem, self.a[elem])
-                k = A.link[k]
-                elem += 1
-
-        # Analyze
-        self.analyze()
         return
+
+
+    def __dealloc__(self):
+        PyMem_Free(self.a)
+        return
+
+    cdef index_to_fortran(self):
+        """
+        Convert 0-based indices to Fortran indices (1-based).
+
+        Note:
+          Only for ``irn`` and ``jcn``.
+        """
+
+        # transform c index arrays to fortran arrays
+        c_to_fortran_index_array(self.data.irn, self.nnz)
+        c_to_fortran_index_array(self.data.jcn, self.nnz)
+
 
     property factorized:
         def __get__(self): return self.factorized
     property cond:
-        def __get__(self): return self.cond 
+        def __get__(self): return self.cond
 
     def factorize(self, *args):
         """
@@ -115,10 +118,10 @@ cdef class MA57Context:
         self.data.rankdef = True if (self.data.rank < self.data.n) else False
         print 'rankdef: ', self.data.rankdef
         return
-    
+
     # TODO: add residual
     # WARNING: NLPy returns none and store solution in `self.x`
-    def solve(self, np.ndarray[double, ndim=1] rhs, np.ndarray[double, ndim=1] residual,
+    def solve(self, np.ndarray[@type|generic_to_c_type@, ndim=1] rhs, np.ndarray[@type|generic_to_c_type@, ndim=1] residual,
               bint get_resid):
         """
         solve(b) solves the linear system of equations Ax = b.
@@ -131,16 +134,16 @@ cdef class MA57Context:
                              "and rhs is of size (%g)"%(self.n, self.n, rhs.size))
 
         x = rhs.copy() # x<- rhs ; will be overwritten
-        self.data.residual  = <double *> np.PyArray_DATA(residual)
+        self.data.residual  = <@type|generic_to_c_type@ *> np.PyArray_DATA(residual)
 
-        error = Ma57_Solve(self.data, <double *> np.PyArray_DATA(x))
+        error = Ma57_Solve(self.data, <@type|generic_to_c_type@ *> np.PyArray_DATA(x))
 
         if error:
             raise RuntimeError("Error return code from Solve: %-d\n", error)
 
         return x
 
-    def refine(self, np.ndarray[double, ndim=1] x, np.ndarray[double, ndim=1] rhs, int nitref, *args):
+    def refine(self, np.ndarray[@type|generic_to_c_type@, ndim=1] x, np.ndarray[@type|generic_to_c_type@, ndim=1] rhs, int nitref, *args):
         """
         refine( b, nitref ) performs iterative refinement if necessary
         until the scaled residual norm ||b-Ax||/(1+||b||) falls below the
@@ -155,12 +158,17 @@ cdef class MA57Context:
 
         x_0 = x.copy()
         rhs_0 = rhs.copy()
-        error = Ma57_Refine(self.data, <double *> np.PyArray_DATA(x_0), <double *> np.PyArray_DATA(rhs_0), self.a, nitref, 2)
+        error = Ma57_Refine(self.data,
+                            <@type|generic_to_c_type@ *> np.PyArray_DATA(x_0),
+                            <@type|generic_to_c_type@ *> np.PyArray_DATA(rhs_0),
+                            self.a,
+                            nitref,
+                            2)
 
         print error
 
         self.cond     = self.data.rinfo[10]    # 1st cond number estimate
-        self.cond2    = self.data.rinfo[11]    # 2nd cond number estimate 
+        self.cond2    = self.data.rinfo[11]    # 2nd cond number estimate
         self.berr     = self.data.rinfo[5]     # 1st backward err estimate
         self.berr2    = self.data.rinfo[6]     # 2nd backward err estimate
         self.dirError = self.data.rinfo[12]    # direct error estimate
@@ -205,6 +213,3 @@ cdef class MA57Context:
                 self.data.info[21], # number of 2x2 pivots
                 self.data.info[23], # number of negative eigenvalues
                 self.data.info[24]) # matrix rank
-
-    def __dealloc__(self):
-        return
