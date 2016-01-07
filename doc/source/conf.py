@@ -31,6 +31,7 @@ import sphinx_bootstrap_theme
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.doctest']
 extensions += ['sphinx.ext.todo']
+extensions += ['sphinx.ext.napoleon']
 extensions += ['sphinx.ext.inheritance_diagram']
 extensions += ['ipython_console_highlighting']
 extensions += ['mathjax']

@@ -18,7 +18,7 @@ cdef class CySparseMA57Solver_@index@_@type@(BaseMA57Solver_@index@_@type@):
 
     """
 
-    def __cinit__(self, int m, int n, int nnz, verbose=False):
+    def __cinit__(self, int m, int n, int nnz, bint sqd=False, verbose=False):
         pass
 
     cpdef get_matrix_data(self, LLSparseMatrix_@index@_t_@type@_t A):

@@ -251,7 +251,7 @@ if build_cysparse_ext:
   {% for element_type in type_list %}
     retval = os.getcwd()
     os.chdir('hsl/solvers/src')
-    call(['cython', '-I', cysparse_rootdir[0], '_cyma57_cysparse_@index_type@_@element_type@'])
+    call(['cython', '-I', cysparse_rootdir[0], '_cyma57_cysparse_@index_type@_@element_type@.pyx'])
     os.chdir(retval)
     cysparse_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
     cysparse_ext_params_@index_type@_@element_type@['include_dirs'].extend(cysparse_rootdir)
@@ -262,8 +262,7 @@ if build_cysparse_ext:
 {% endfor %}
 
 
-packages_list = ['hsl', 'hsl.ordering', 'hsl.ordering.src',
-                 'hsl.scaling', 'hsl.scaling.src', 'hsl.solvers',
+packages_list = ['hsl', 'hsl.ordering', 'hsl.scaling', 'hsl.solvers',
                  'hsl.solvers.src']
 
 
@@ -308,4 +307,4 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 
 config.make_config_py()
 
-setup(zip_safe=False, **config.todict())
+setup(packages=packages_list, zip_safe=False, **config.todict())

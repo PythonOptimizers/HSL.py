@@ -57,7 +57,8 @@ cdef class BaseMA57Solver_@index@_@type@:
         int nnz
         Ma57_Data* data
         @type|generic_to_c_type@* a
-        np.ndarray residual
+        @type|generic_to_c_type@* x
+        @type|generic_to_c_type@* residual
         int factorized
         @type|generic_to_c_type@ cond
         @type|generic_to_c_type@ cond2

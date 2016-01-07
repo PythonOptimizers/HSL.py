@@ -245,7 +245,7 @@ config.add_extension(name="solvers.src._cyma57_numpy_INT32_FLOAT64",
 if build_cysparse_ext:
     retval = os.getcwd()
     os.chdir('hsl/solvers/src')
-    call(['cython', '-I', cysparse_rootdir[0], '_cyma57_cysparse_INT32_FLOAT64'])
+    call(['cython', '-I', cysparse_rootdir[0], '_cyma57_cysparse_INT32_FLOAT64.pyx'])
     os.chdir(retval)
     cysparse_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
     cysparse_ext_params_INT32_FLOAT64['include_dirs'].extend(cysparse_rootdir)
@@ -254,8 +254,7 @@ if build_cysparse_ext:
                  **cysparse_ext_params_INT32_FLOAT64)
 
 
-packages_list = ['hsl', 'hsl.ordering', 'hsl.ordering.src',
-                 'hsl.scaling', 'hsl.scaling.src', 'hsl.solvers',
+packages_list = ['hsl', 'hsl.ordering', 'hsl.scaling', 'hsl.solvers',
                  'hsl.solvers.src']
 
 
@@ -300,4 +299,4 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 
 config.make_config_py()
 
-setup(zip_safe=False, **config.todict())
+setup(packages=packages_list, zip_safe=False, **config.todict())

@@ -1,3 +1,7 @@
+"""
+Exemple from MA57 spec sheet: http://www.hsl.rl.ac.uk/specs/ma57.pdf
+"""
+
 import numpy as np
 
 from hsl.solvers.src._cyma57_numpy_INT32_FLOAT64 import NumpyMA57Solver_INT32_FLOAT64
@@ -21,10 +25,12 @@ context.analyze()
 context.factorize()
 
 print 'Solve:'
-residual = np.zeros(n, 'd')
-x  = context.solve(rhs, residual, False)
+x, residual = context.solve(rhs, True)
+# x = context.solve(rhs, False)
 print '  x:'
 print x
+print '  residual:'
+print residual
 
 print 'Fetch_perm:'
 perm = context.fetch_perm()
@@ -32,12 +38,9 @@ print '  perm:'
 print perm
 
 print 'Refine:'
-(new_x, new_rhs) = context.refine(x, rhs, 5)
-print '  cond: ', context.cond
+(new_x, new_res) = context.refine(x, rhs, residual, 5)
 print '  new_x: '
 print new_x
-print x
-print '  new_rhs: '
-print new_rhs
-print rhs
+print '  new_res: '
+print new_res
 

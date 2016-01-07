@@ -19,27 +19,29 @@ rhs = A*e
 
 context = CySparseMA57Solver_INT32_FLOAT64(A.nrow, A.ncol, A.nnz)
 context.get_matrix_data(A)
-context.analyze()
-context.factorize()
 
-print 'Solve:'
-residual = np.zeros(n, 'd')
-x  = context.solve(rhs, residual, False)
-print '  x:'
-print x
+context.analyze()
+
+context.factorize()
 
 print 'Fetch_perm:'
 perm = context.fetch_perm()
 print '  perm:'
 print perm
 
+
+print 'Solve:'
+x, residual  = context.solve(rhs, True)
+print '  x:'
+print x
+print '  residual:'
+print residual
+
 print 'Refine:'
-(new_x, new_rhs) = context.refine(x, rhs, 5)
+(new_x, new_res) = context.refine(x, rhs, residual, 5)
 print '  cond: ', context.cond
 print '  new_x: '
 print new_x
-print x
-print '  new_rhs: '
-print new_rhs
-print rhs
+print '  new_res: '
+print new_res
 
