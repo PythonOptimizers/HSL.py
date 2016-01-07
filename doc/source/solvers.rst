@@ -17,21 +17,22 @@ The :mod:`pyma27` Module
    :undoc-members:
 
 
-The :mod:`pyma57` Module
+The :mod:`ma57` Module
 ========================
 
-.. automodule:: hsl.solvers.pyma57
-
-.. autoclass:: PyMa57Solver
-   :show-inheritance:
-   :members:
-   :inherited-members:
-   :undoc-members:
+Cython module no doc ...
 
 
 
 Example
 =======
 
+.. literalinclude:: ../../examples/demo_cyma57_numpy.py
+   :linenos:
+
+.. literalinclude:: ../../examples/demo_cyma57_cysparse.py
+   :linenos:
+
+TO BE CHANGED
 .. literalinclude:: ../../examples/demo_sils.py
    :linenos:

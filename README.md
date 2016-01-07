@@ -53,6 +53,14 @@ To run the tests:
 
 		python setup.py install. 
 
+## Compilation of cython files
+
+    cython -I ~/work/VirtualEnvs/nlpy_new/programs/cysparse/ _cyma57.pyx
+
+## Note
+weird behaviour of Cython, cannot cythonize some .pyx files using setup.py but works when invoking cython from command line ...
+So I modified setup.py to create c file using command line "cython"
+
 ## TODO
 
 - [ ] make it work with CySparse

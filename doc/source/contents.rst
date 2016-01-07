@@ -12,6 +12,7 @@
    introduction
    installation
    ordering
+   scaling
    solvers
    examples
    

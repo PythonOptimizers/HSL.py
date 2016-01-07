@@ -1,7 +1,13 @@
 site.cfg
 .DS_Store
 
-# Byte-compiled / optimized / DLL files
+# C extensions
+*.so
+
+# Generated files
+*.pyx
+*.pxd
+*.c
 __pycache__/
 *.py[cod]
 *$py.class
