@@ -24,6 +24,9 @@ Just follow hyperlinks in upper section and fill the licence agreement on their 
 HSL.py also depends on
 
 - NumPy;
+
+
+And optionaly on
 - CySparse;
 
 If you intend to generate the documentation:
@@ -46,24 +49,26 @@ To run the tests:
 2. Install Python dependencies
 
 		pip install numpy
-		pip install cysparse (one day ;))
+		pip install cysparse (one day ;))  (optional)
 
 3. Copy `site.template.cfg` to `site.cfg` and adjust it to your needs.
 4. Install HSL.py
 
 		python setup.py install. 
 
-## Compilation of cython files
-
-    cython -I ~/work/VirtualEnvs/nlpy_new/programs/cysparse/ _cyma57.pyx
 
 ## Note
 weird behaviour of Cython, cannot cythonize some .pyx files using setup.py but works when invoking cython from command line ...
 So I modified setup.py to create c file using command line "cython"
 
+    cython -I ~/work/VirtualEnvs/nlpy_new/programs/cysparse/_cyma57.pyx
+
 ## TODO
 
-- [ ] make it work with CySparse
-- [ ] create documentation
+- [ ] remove pysparse from ma27
+- [x] remove pysparse from ma57
+- [x] make it work with CySparse
+- [x] create documentation
+- [ ] update documentation
 - [ ] add tests
 - [ ] make it work for single precision (cygenja?)
