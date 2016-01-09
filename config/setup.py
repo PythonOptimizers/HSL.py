@@ -155,12 +155,6 @@ if files_exist(ma27_sources):
                        include_dirs=[hsl_rootdir, os.path.join('hsl', 'solvers', 'src')],)
 
 
-    config.add_extension(name='solvers._pyma27',
-                         sources=pyma27_sources,
-                         depends=[],
-                         libraries=['hsl_ma27'],
-                         include_dirs=['include', os.path.join('hsl', 'solvers', 'src')],)
-
 
 # Build PyMA57
 ma57_src = ['ddeps.f', 'ma57d.f']
@@ -215,6 +209,33 @@ else:
     ext_params['extra_link_args'] = ["-g"]
        
 context_ext_params = copy.deepcopy(ext_params)
+cyma27_src_INT32_FLOAT64 = ['ma27_lib.c',
+                                          'hsl_alloc.c',
+                                          '_cyma27_base_INT32_FLOAT64.c']
+cyma27_sources_INT32_FLOAT64 = [os.path.join('hsl', 'solvers', 'src', name) for name in cyma27_src_INT32_FLOAT64]
+
+cyma27_base_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
+cyma27_base_ext_params_INT32_FLOAT64['libraries'] = ['hsl_ma27']
+retval = os.getcwd()
+os.chdir('hsl/solvers/src')
+call(['cython', '_cyma27_base_INT32_FLOAT64.pyx'])
+os.chdir(retval)
+config.add_extension(
+            name='solvers.src._cyma27_base_INT32_FLOAT64',
+            sources=cyma27_sources_INT32_FLOAT64,
+            **cyma27_base_ext_params_INT32_FLOAT64)
+
+retval = os.getcwd()
+os.chdir('hsl/solvers/src')
+call(['cython', '_cyma27_numpy_INT32_FLOAT64.pyx'])
+os.chdir(retval)
+cyma27_numpy_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
+config.add_extension(name="solvers.src._cyma27_numpy_INT32_FLOAT64",
+                 sources=['hsl/solvers/src/_cyma27_numpy_INT32_FLOAT64.c'],
+                 **cyma27_numpy_ext_params_INT32_FLOAT64)
+
+
+
 cyma57_src_INT32_FLOAT64 = ['ma57_lib.c',
                                           'hsl_alloc.c',
                                           '_cyma57_base_INT32_FLOAT64.c']

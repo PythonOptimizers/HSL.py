@@ -155,12 +155,6 @@ if files_exist(ma27_sources):
                        include_dirs=[hsl_rootdir, os.path.join('hsl', 'solvers', 'src')],)
 
 
-    config.add_extension(name='solvers._pyma27',
-                         sources=pyma27_sources,
-                         depends=[],
-                         libraries=['hsl_ma27'],
-                         include_dirs=['include', os.path.join('hsl', 'solvers', 'src')],)
-
 
 # Build PyMA57
 ma57_src = ['ddeps.f', 'ma57d.f']
@@ -215,6 +209,37 @@ else:
     ext_params['extra_link_args'] = ["-g"]
        
 context_ext_params = copy.deepcopy(ext_params)
+{% for index_type in index_list %}
+  {% for element_type in type_list %}
+cyma27_src_@index_type@_@element_type@ = ['ma27_lib.c',
+                                          'hsl_alloc.c',
+                                          '_cyma27_base_@index_type@_@element_type@.c']
+cyma27_sources_@index_type@_@element_type@ = [os.path.join('hsl', 'solvers', 'src', name) for name in cyma27_src_@index_type@_@element_type@]
+
+cyma27_base_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
+cyma27_base_ext_params_@index_type@_@element_type@['libraries'] = ['hsl_ma27']
+retval = os.getcwd()
+os.chdir('hsl/solvers/src')
+call(['cython', '_cyma27_base_@index_type@_@element_type@.pyx'])
+os.chdir(retval)
+config.add_extension(
+            name='solvers.src._cyma27_base_@index_type@_@element_type@',
+            sources=cyma27_sources_@index_type@_@element_type@,
+            **cyma27_base_ext_params_@index_type@_@element_type@)
+
+retval = os.getcwd()
+os.chdir('hsl/solvers/src')
+call(['cython', '_cyma27_numpy_@index_type@_@element_type@.pyx'])
+os.chdir(retval)
+cyma27_numpy_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
+config.add_extension(name="solvers.src._cyma27_numpy_@index_type@_@element_type@",
+                 sources=['hsl/solvers/src/_cyma27_numpy_@index_type@_@element_type@.c'],
+                 **cyma27_numpy_ext_params_@index_type@_@element_type@)
+
+  {% endfor %}
+{% endfor %}
+
+
 {% for index_type in index_list %}
   {% for element_type in type_list %}
 cyma57_src_@index_type@_@element_type@ = ['ma57_lib.c',
