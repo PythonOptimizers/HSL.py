@@ -24,6 +24,12 @@ context.analyze()
 
 context.factorize()
 
+print 'Fetch_perm:'
+perm = context.fetch_perm()
+print '  perm:'
+print perm
+
+
 print 'Solve:'
 x, residual = context.solve(rhs, True)
 # x = context.solve(rhs, False)
@@ -31,11 +37,6 @@ print '  x:'
 print x
 print '  residual:'
 print residual
-
-print 'Fetch_perm:'
-perm = context.fetch_perm()
-print '  perm:'
-print perm
 
 print 'Refine:'
 (new_x, new_res) = context.refine(x, rhs, residual, 1e-8, 5)

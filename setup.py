@@ -198,7 +198,6 @@ config.add_extension(
         extra_link_args=[])
 
 ## Extensions using Cython
-hsl_ext = []
 ext_params = {}
 ext_params['include_dirs'] = include_dirs
 if not use_debug_symbols:
@@ -266,37 +265,27 @@ config.add_extension(name="solvers.src._cyma57_numpy_INT32_FLOAT64",
 if build_cysparse_ext:
     retval = os.getcwd()
     os.chdir('hsl/solvers/src')
+    call(['cython', '-I', cysparse_rootdir[0], '_cyma27_cysparse_INT32_FLOAT64.pyx'])
+    os.chdir(retval)
+    cyma27_cysparse_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
+    cyma27_cysparse_ext_params_INT32_FLOAT64['include_dirs'].extend(cysparse_rootdir)
+    config.add_extension(name="solvers.src._cyma27_cysparse_INT32_FLOAT64",
+                 sources=['hsl/solvers/src/_cyma27_cysparse_INT32_FLOAT64.c'],
+                 **cyma27_cysparse_ext_params_INT32_FLOAT64)
+
+    retval = os.getcwd()
+    os.chdir('hsl/solvers/src')
     call(['cython', '-I', cysparse_rootdir[0], '_cyma57_cysparse_INT32_FLOAT64.pyx'])
     os.chdir(retval)
-    cysparse_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
-    cysparse_ext_params_INT32_FLOAT64['include_dirs'].extend(cysparse_rootdir)
+    cyma57_cysparse_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
+    cyma57_cysparse_ext_params_INT32_FLOAT64['include_dirs'].extend(cysparse_rootdir)
     config.add_extension(name="solvers.src._cyma57_cysparse_INT32_FLOAT64",
                  sources=['hsl/solvers/src/_cyma57_cysparse_INT32_FLOAT64.c'],
-                 **cysparse_ext_params_INT32_FLOAT64)
+                 **cyma57_cysparse_ext_params_INT32_FLOAT64)
 
 
 packages_list = ['hsl', 'hsl.ordering', 'hsl.scaling', 'hsl.solvers',
                  'hsl.solvers.src']
-
-
-# PACKAGE PREPARATION FOR EXCLUSIVE C EXTENSIONS
-########################################################################################################################
-# We only use the C files **without** Cython. In fact, Cython doesn't need to be installed.
-cythonize(hsl_ext)
-prepare_Cython_extensions_as_C_extensions(hsl_ext)
-
-for ext in hsl_ext:
-    print ext.name
-    print ext.sources
-    print ext.libraries
-    print ext.include_dirs
-    config.add_extension(name=ext.name[4:],
-                         sources=ext.sources,
-                         depends=ext.depends,
-                         library_dirs=ext.library_dirs,
-                         libraries=ext.libraries,
-                         include_dirs=ext.include_dirs,)
-
 
 CLASSIFIERS = """\
 Development Status :: 4 - Beta

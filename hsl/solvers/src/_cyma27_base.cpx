@@ -90,8 +90,6 @@ cdef class BaseMA27Solver_@index@_@type@:
 
     property factorized:
         def __get__(self): return self.factorized
-    property cond:
-        def __get__(self): return self.cond
 
     def analyze(self, *args):
         error = Ma27_Analyze(self.data, 0)  # iflag = 0: automatic pivot choice
@@ -198,6 +196,7 @@ cdef class BaseMA27Solver_@index@_@type@:
 
         new_x = x.copy()
         new_res = residual.copy()
+
         self.data.residual = <@type|generic_to_c_type@ *> np.PyArray_DATA(new_res)
 
         error = Ma27_Refine(self.data,
