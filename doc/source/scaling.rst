@@ -26,7 +26,7 @@ Example
 
 Output
 
-.. code-block:: python
+.. code-block:: bash
 
    orignal values:
     i  j    val

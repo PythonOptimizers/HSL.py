@@ -52,7 +52,7 @@ Then, :program:`metis` and its dependencies can be installed automatically in `/
 
   ..  code-block:: bash
 
-      git clone https://github.com/PythonOptimizers/cysparse.git
+      git clone https://github.com/PythonOptimizers/HSL.py.git
 
 
 2. Install the :program:`Python` dependencies:
