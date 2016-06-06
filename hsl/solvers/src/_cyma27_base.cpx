@@ -20,16 +20,16 @@ cdef extern from "ma27.h":
         int       nsteps
         int       iflag               # Pivot selection
         double    ops                 # Operation count
-    
+
         char      rankdef             # Indicate whether matrix is rank-deficient
         int       rank;               # Matrix rank
-    
+
         int       la
         @type|generic_to_c_type@   *factors             # Matrix factors
         int       maxfrt
         @type|generic_to_c_type@   *w                   # Real workspace
-    
-        @type|generic_to_c_type@   *residual            # = b - Ax   
+
+        @type|generic_to_c_type@   *residual            # = b - Ax
         char      fetched             # Factors have been fetched
                                       # Used for de-allocation
 
@@ -173,11 +173,12 @@ cdef class BaseMA27Solver_@index@_@type@:
 
     def refine(self, np.ndarray[@type|generic_to_c_type@, ndim=1] x, np.ndarray[@type|generic_to_c_type@, ndim=1] rhs,
                np.ndarray[@type|generic_to_c_type@, ndim=1] residual, double tol=1e-8, int nitref=3, *args):
-        """
-        refine performs iterative refinement if necessary
-        until the scaled residual norm ||b-Ax||/(1+||b||) falls below a threshold 'tol'
-        or until nitref steps are taken.
-        
+        """Perform iterative refinement.
+
+        If necessary, it performs iterative refinement until the scaled
+        residual norm ||b-Ax||/(1+||b||) falls below a threshold 'tol' or until
+        nitref steps are taken.
+
         warning: Make sure you have called solve() with the same right-hand
         side b before calling refine().
 
@@ -212,9 +213,7 @@ cdef class BaseMA27Solver_@index@_@type@:
         return (new_x, new_res)
 
     def stats(self):
-        """
-        Return statistics on the solve
-        """
+        """Return statistics on the solve."""
         return (self.data.info[8],  # storage for real data of factors
                 self.data.info[9],  # storage for int  data of factors
                 self.data.info[10], # nb of data compresses performed in analysis

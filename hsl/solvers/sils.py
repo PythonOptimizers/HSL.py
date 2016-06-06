@@ -6,6 +6,7 @@ from the Harwell Subroutine Library (http://hsl.rl.ac.uk).
 
 import numpy
 
+
 class Sils:
     """
     Abstract class for the factorization and solution of symmetric indefinite
@@ -13,8 +14,13 @@ class Sils:
     """
 
     def __init__(self, A, **kwargs):
-        if not A.issym:
-            raise ValueError, 'Input matrix must be symmetric'
+        try:
+            symmetric = A.issym
+        except:
+            symmetric = A.is_symmetric
+
+        if not symmetric:
+            raise ValueError('Input matrix must be symmetric')
         self.n = A.shape[0]
         self.sqd = 'sqd' in kwargs and kwargs['sqd']
 
@@ -25,19 +31,13 @@ class Sils:
         self.context = None
 
     def solve(self, b, get_resid=True):
-        """
-        Must be subclassed.
-        """
+        """Must be subclassed."""
         raise NotImplementedError
 
     def refine(self, b, nitref=3):
-        """
-        Must be subclassed.
-        """
+        """Must be subclassed."""
         raise NotImplementedError
 
     def fetch_perm(self):
-        """
-        Must be subclassed.
-        """
+        """Must be subclassed."""
         raise NotImplementedError

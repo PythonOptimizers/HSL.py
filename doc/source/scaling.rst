@@ -26,7 +26,7 @@ Example
 
 Output
 
-.. code-block:: bash
+.. code-block:: none
 
    orignal values:
     i  j    val

@@ -8,6 +8,7 @@ from pysparse.sparse import spmatrix
 from sils import Sils
 from hsl.solvers import _pyma27
 
+
 class PyMa27Solver(Sils):
 
     def __init__(self, A, **kwargs):
@@ -66,11 +67,11 @@ class PyMa27Solver(Sils):
         # Statistics on A
         self.rwords = 0      # Number of real words used during factorization
         self.iwords = 0      # "         int
-        self.ncomp  = 0      # "         data compresses performed in analysis
+        self.ncomp = 0       # "         data compresses performed in analysis
         self.nrcomp = 0      # "         real
         self.nicomp = 0      # "         int
         self.n2x2pivots = 0  # "         2x2 pivots used
-        self.neig   = 0      # "         negative eigenvalues detected
+        self.neig = 0        # "         negative eigenvalues detected
 
         # Factors
         self.L = spmatrix.ll_mat(self.n, self.n, 0)

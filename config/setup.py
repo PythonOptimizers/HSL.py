@@ -8,12 +8,10 @@ import pysparse
 from distutils.core import setup
 from setuptools import find_packages
 from distutils.extension import Extension
-from Cython.Distutils import build_ext
 from numpy.distutils.misc_util import Configuration
 from numpy.distutils.system_info import get_info
 from numpy.distutils.core import setup
 
-from Cython.Build import cythonize
 
 import numpy as np
 
