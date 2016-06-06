@@ -3,8 +3,8 @@
 # Example usage: python demo_ma27.py file1.mtx ... fileN.mtx
 # where each fileK.mtx is in MatrixMarket format.
 
-from hsl.solvers.pyma27 import PyMa27Solver as LBLContext
-# from nlpy.linalg.pyma57 import PyMa57Context as LBLContext
+# from hsl.solvers.pyma27 import PyMa27Solver as LBLContext
+from hsl.solvers.pyma57 import PyMa57Solver as LBLContext
 from pysparse import spmatrix
 from nlpy.tools import norms
 from nlpy.tools.timing import cputime

@@ -53,7 +53,7 @@ def prepare_Cython_extensions_as_C_extensions(extensions):
 
         # modify extension in place
         extension.sources = c_sources
-           
+
 def files_exist(file_list):
     for fname in file_list:
         if os.path.isfile(fname) == False:
@@ -61,7 +61,7 @@ def files_exist(file_list):
     return True
 
 f2py_options = []
-           
+
 hsl_config = ConfigParser.SafeConfigParser()
 hsl_config.read('site.cfg')
 
@@ -98,7 +98,7 @@ metis_dir = hsl_config.get('METIS', 'metis_dir')
 metis_lib = hsl_config.get('METIS', 'metis_lib')
 
 # OPTIONAL
-build_cysparse_ext = False           
+build_cysparse_ext = False
 if hsl_config.has_section('CYSPARSE'):
     build_cysparse_ext = True
     cysparse_rootdir = hsl_config.get('CYSPARSE', 'cysparse_rootdir').split(os.pathsep)
@@ -128,13 +128,13 @@ lapack_info = get_info('lapack_opt', 0)
 if not lapack_info:
     print 'No lapack info found'
 
-           
+
 ########################################################################################################################
 # EXTENSIONS
 ########################################################################################################################
 include_dirs = [numpy_include, 'include', '.']
 
-## Extensions using Fortran codes 
+## Extensions using Fortran codes
 
 # Relevant files for building MA27 extension.
 ma27_src = ['fd05ad.f', 'ma27ad.f']
@@ -147,24 +147,34 @@ ma27_sources += [os.path.join('hsl', 'solvers', 'src', name) for name in libma27
 pyma27_sources = [os.path.join('hsl', 'solvers', 'src', name) for name in pyma27_src]
 
 if files_exist(ma27_sources):
-          
+
     config.add_library(name='hsl_ma27',
                        sources=ma27_sources,
                        include_dirs=[hsl_rootdir, os.path.join('hsl', 'solvers', 'src')],)
 
-
+    config.add_extension(name='solvers._pyma27',
+                         sources=pyma27_sources,
+                         libraries=['hsl_ma27'],
+                         include_dirs=['include', os.path.join('hsl','solvers','src')],)
 
 # Build PyMA57
 ma57_src = ['ddeps.f', 'ma57d.f']
 ma57_sources = [os.path.join(hsl_rootdir, 'ma57d', name) for name in ma57_src]
+pyma57_src = ['ma57_lib.c', 'hsl_alloc.c', '_pyma57.c']
+pyma57_sources = [os.path.join('hsl','solvers','src',name) for name in pyma57_src]
 
 if files_exist(ma57_sources):
-    config.add_library(
-            name='hsl_ma57',
-            sources=ma57_sources,
-            libraries=[metis_lib],
-            library_dirs=[metis_dir],
-            include_dirs=[hsl_rootdir, os.path.join('hsl', 'solvers', 'src')],)
+    config.add_library(name='hsl_ma57',
+                       sources=ma57_sources,
+                       libraries=[metis_lib],
+                       library_dirs=[metis_dir],
+                       include_dirs=[hsl_rootdir, os.path.join('hsl', 'solvers', 'src')],)
+
+    config.add_extension(name='solvers._pyma57',
+                         sources=pyma57_sources,
+                         libraries=[metis_lib,'hsl_ma57'],
+                         library_dirs=[metis_dir],
+                         include_dirs=['include',os.path.join('hsl','solvers','src')],)
 
 mc29_sources = [os.path.join(hsl_rootdir, 'mc29d', 'mc29d.f'),
                 os.path.join('hsl', 'scaling', 'src', 'mc29.pyf')]
@@ -204,7 +214,7 @@ if not use_debug_symbols:
 else:
     ext_params['extra_compile_args'] = ["-g", '-std=c99', '-Wno-unused-function']
     ext_params['extra_link_args'] = ["-g"]
-       
+
 context_ext_params = copy.deepcopy(ext_params)
 cyma27_src_INT32_FLOAT64 = ['ma27_lib.c',
                                           'hsl_alloc.c',
