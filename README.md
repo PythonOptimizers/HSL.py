@@ -49,9 +49,15 @@ To run the tests:
 2. Install Python dependencies
 
 		pip install numpy
+        pip install cygenja
 		pip install cysparse (one day ;))  (optional)
 
 3. Copy `site.template.cfg` to `site.cfg` and adjust it to your needs.
+
+4. Generate cython files:
+        
+        python generate_code.py
+
 4. Install HSL.py
 
 		python setup.py install. 
