@@ -41,6 +41,25 @@ To run the tests:
 
 ## Installation
 
+### branch `master`
+
+1. Clone repository
+
+		git clone git@github.com:optimizers/HSL.py.git
+	
+2. Install Python dependencies
+
+		pip install numpy
+		pip install cysparse (one day ;))  (optional)
+
+3. Copy `site.template.cfg` to `site.cfg` and adjust it to your needs.
+
+4. Install HSL.py
+
+		python setup.py install. 
+
+
+### branch `develop`
 
 1. Clone repository
 
@@ -63,6 +82,7 @@ To run the tests:
 		python setup.py install. 
 
 
+
 ## Note
 weird behaviour of Cython, cannot cythonize some .pyx files using setup.py but works when invoking cython from command line ...
 So I modified setup.py to create c file using command line "cython"
@@ -71,10 +91,10 @@ So I modified setup.py to create c file using command line "cython"
 
 ## TODO
 
-- [ ] remove pysparse from ma27
-- [x] remove pysparse from ma57
+- [ ] remove pysparse from cyma27
+- [x] remove pysparse from cyma57
 - [x] make it work with CySparse
 - [x] create documentation
 - [ ] update documentation
-- [ ] add tests
+- [ ] add more tests
 - [ ] make it work for single precision (cygenja?)
