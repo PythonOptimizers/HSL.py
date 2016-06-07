@@ -2,16 +2,16 @@
 """Ma57: Direct multifrontal solution of symmetric systems."""
 
 from pysparse.sparse.pysparseMatrix import PysparseMatrix
-from sils import Sils
 from hsl.solvers import _pyma57
+from sils import Sils
 
 
 class PyMa57Solver(Sils):
 
     def __init__(self, A, factorize=True, **kwargs):
-        """
-        Create a PyMa57Solver object representing a context to solve
-        the square symmetric linear system of equations
+        u"""Instantiate a :class:`PyMa57Solver` object.
+
+        Context to solve the square symmetric linear system of equations
 
             A x = b.
 
@@ -22,7 +22,7 @@ class PyMa57Solver(Sils):
         The factorization is a multi-frontal variant of the Bunch-Parlett
         factorization, i.e.
 
-            A = L B Lt
+            A = L B Lᵀ
 
         where L is unit lower triangular, and B is symmetric and block diagonal
         with either 1x1 or 2x2 blocks.
@@ -31,8 +31,8 @@ class PyMa57Solver(Sils):
         (positive or negative) definite, or symmetric quasi-definite (sqd).
         SQD matrices have the general form
 
-            [ E  solvert ]
-            [ solver  -F ]
+            [ E   Gᵀ ]
+            [ G  -F  ]
 
         where both E and F are positive definite. As a special case, positive
         definite matrices and negative definite matrices are sqd. SQD matrices
@@ -41,7 +41,8 @@ class PyMa57Solver(Sils):
 
         Currently accepted keyword arguments are:
 
-           sqd  Flag indicating symmetric quasi-definite matrix (default: False)
+        :keywords:
+            :sqd:  Flag indicating symmetric quasi-definite matrix (default: False)
 
         Example:
 
@@ -51,7 +52,7 @@ class PyMa57Solver(Sils):
         >>> P.solve(rhs, get_resid=True)
         >>> print numpy.linalg.norm(P.residual)
 
-        Pyma57 relies on the sparse direct multifrontal code MA57
+        PyMa57Solver relies on the sparse direct multifrontal code MA57
         from the Harwell Subroutine Library.
 
         From the MA57 spec sheet, 'In addition to being more efficient largely
@@ -113,9 +114,10 @@ class PyMa57Solver(Sils):
         return (self.rank - self.neig, self.neig, self.n - self.rank)
 
     def factorize(self, A):
-        """
-        Perform numerical factorization. Before this can be done, symbolic
-        factorization (the "analyze" phase) must have been performed.
+        """Perform numerical factorization.
+
+        Before this can be done, symbolic factorization (the `analyze` phase)
+        must have been performed.
 
         The values of the elements of the matrix may have been altered since
         the analyze phase but the sparsity pattern must not have changed. Use
@@ -137,23 +139,24 @@ class PyMa57Solver(Sils):
         return
 
     def solve(self, b, get_resid=True):
-        """
-        solve(b) solves the linear system of equations Ax = b.
+        """Solve the linear system of equations Ax = b.
+
         The solution will be found in self.x and residual in
-        self.residual.
+        `self.residual`.
         """
         self.context.ma57(b, self.x, self.residual, get_resid)
         return None
 
     def refine(self, b, nitref=3, **kwargs):
-        """
-        refine(b, nitref) performs iterative refinement if necessary
-        until the scaled residual norm ||b-Ax||/(1+||b||) falls below the
-        threshold 'tol' or until nitref steps are taken.
-        Make sure you have called solve() with the same right-hand
-        side b before calling refine().
-        The residual vector self.residual will be updated to reflect
-        the updated approximate solution.
+        u"""Perform iterative refinement if necessary.
+
+        Iterative refinement is performed until the scaled residual norm
+        ‖b-Ax‖/(1+‖b‖) falls below the threshold 'tol' or until nitref steps
+        are taken.
+        Make sure you have called `solve()` with the same right-hand side b
+        before calling `refine()`.
+        The residual vector `self.residual` will be updated to reflect the
+        updated approximate solution.
 
         By default, nitref = 3.
         """
@@ -164,12 +167,13 @@ class PyMa57Solver(Sils):
         return None
 
     def fetch_perm(self):
-        """
-        fetch_perm() returns the permutation vector p used
+        u"""Return the permutation vector p.
+
+        Permutation vector is used
         to compute the factorization of A. Rows and columns
         were permuted so that
 
-              P^T  A P = L  B  L^T
+              Pᵀ A P = L B Lᵀ
 
         where i-th row of P is the p(i)-th row of the
         identity matrix, L is unit upper triangular and

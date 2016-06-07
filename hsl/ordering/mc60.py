@@ -1,5 +1,4 @@
-"""
-A Python interface to the HSL subroutine MC60AD.
+"""A Python interface to the HSL subroutine MC60AD.
 
 The functions in this module compute a symmetric permutation of a sparse
 symmetric matrix so as to reduce its profile, wavefront, or bandwidth via
@@ -20,15 +19,16 @@ References
 
 .. moduleauthor:: dominique.orban@gerad.ca
 """
+import numpy as np
+import hsl.ordering._mc60 as _mc60
 
 __docformat__ = 'restructuredtext'
 
-import numpy as np
-import _mc60
 
-def sloan(n, rowind, colptr, icntl=[0,6], weight=[2,1]):
-    """
-    Apply Sloan's algorithm to reduce the profile and wavefront of a sparse
+def sloan(n, rowind, colptr, icntl=[0, 6], weight=[2, 1]):
+    """Apply Sloan's algorithm.
+
+    Sloan's algorithm is used to reduce the profile and wavefront of a sparse
     symmetric matrix. Either the lower or the upper triangle of the input
     matrix should be given in compressed sparse column (csc) or compressed
     sparse row (csr) format. This includes the diagonal of the matrix. A set of
@@ -77,11 +77,13 @@ def sloan(n, rowind, colptr, icntl=[0,6], weight=[2,1]):
                 rinfo[2] = semi-bandwidth
                 rinfo[3] = root-mean-square wavefront.
     """
-    return reorder_matrix(n, rowind, colptr, icntl, jcntl=[0,0], weight=[2,1])
+    return reorder_matrix(n, rowind, colptr, icntl, jcntl=[0, 0], weight=[2, 1])
 
-def rcmk(n, rowind, colptr, icntl=[0,6]):
-    """
-    Apply the reverse Cuthill-McKee algorithm to reduce the bandwidth of
+
+def rcmk(n, rowind, colptr, icntl=[0, 6]):
+    """Apply the reverse Cuthill-McKee algorithm.
+
+    The reverse Cuthill-McKee algorithm is used to reduce the bandwidth of
     a sparse symmetric matrix. Either the lower or the upper triangle of the
     input matrix should be given in compressed sparse column (csc) or
     compressed sparse row (csr) format. This includes the diagonal of the
@@ -125,18 +127,19 @@ def rcmk(n, rowind, colptr, icntl=[0,6]):
                 rinfo[2] = semi-bandwidth
                 rinfo[3] = root-mean-square wavefront.
     """
-    return reorder_matrix(n, rowind, colptr, icntl, jcntl=[1,0])
+    return reorder_matrix(n, rowind, colptr, icntl, jcntl=[1, 0])
 
-def reorder_matrix(n, rowind, colptr, icntl=[0,6], jcntl=[0,0], weight=[2,1]):
-    """
-    Helper function called by `sloan` and `rcm` performing the bulk of the
-    work when applying Sloan's method or the reverse Cuthill-McKee algorithm to
-    a symmetric sparse matrix.
+
+def reorder_matrix(n, rowind, colptr, icntl=[0, 6], jcntl=[0, 0], weight=[2, 1]):
+    """Helper function called by `sloan` and `rcm`.
+
+    It performs the bulk of the work when applying Sloan's method or the
+    reverse Cuthill-McKee algorithm to a symmetric sparse matrix.
     """
     # Make room for pattern of the whole matrix and adjust to be 1-based
     icptr = colptr.copy() + 1
-    irn = np.empty(2*(icptr[-1] - 1), dtype=np.int32)
-    irn[:icptr[-1]-1] = rowind.copy() + 1
+    irn = np.empty(2 * (icptr[-1] - 1), dtype=np.int32)
+    irn[:icptr[-1] - 1] = rowind.copy() + 1
 
     # Check data
     info = _mc60.mc60ad(irn, icptr, icntl)
@@ -146,13 +149,13 @@ def reorder_matrix(n, rowind, colptr, icntl=[0,6], jcntl=[0,0], weight=[2,1]):
 
     # Permute reduced matrix
     permsv = np.empty(nsup, dtype=np.int32)
-    pair = np.empty((2,nsup/2), dtype=np.int32)
-    info = _mc60.mc60cd(n, irn, icptr[:nsup+1], vars[:nsup],
-                       jcntl, permsv, weight, pair)
+    pair = np.empty((2, nsup / 2), dtype=np.int32)
+    info = _mc60.mc60cd(n, irn, icptr[:nsup + 1], vars[:nsup],
+                        jcntl, permsv, weight, pair)
 
     # Compute profile, maximum wavefront, semi-bandwidth and root-mean-square
     # wavefront of the permuted matrix
-    rinfo = _mc60.mc60fd(n, irn, icptr[:nsup+1], vars[:nsup], permsv)
+    rinfo = _mc60.mc60fd(n, irn, icptr[:nsup + 1], vars[:nsup], permsv)
 
     # Obtain variable permutation from supervariable permutation
     perm, possv = _mc60.mc60dd(svar, vars[:nsup], permsv)

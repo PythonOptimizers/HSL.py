@@ -8,12 +8,21 @@ import numpy
 
 
 class Sils(object):
-    """
-    Abstract class for the factorization and solution of symmetric indefinite
-    systems of linear equations. The methods of this class must be overridden.
+    """Abstract class for the solution of symmetric indefinite linear systems.
+
+    The methods of this class must be overridden.
     """
 
     def __init__(self, A, **kwargs):
+        """Instantiate a :class:`Sils` object.
+        :parameter:
+            :A: A ll_mat format matrix that should be symmetric.
+
+        :keywords:
+            :sqd:  Flag indicating symmetric quasi-definite matrix
+                   (default: False)
+        """
+
         try:
             symmetric = A.issym
         except:

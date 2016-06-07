@@ -4,27 +4,28 @@
 import numpy
 from pysparse.sparse.pysparseMatrix import PysparseMatrix
 from pysparse.sparse import spmatrix
-from sils import Sils
 from hsl.solvers import _pyma27
+
+from sils import Sils
 
 
 class PyMa27Solver(Sils):
 
     def __init__(self, A, **kwargs):
-        """
-        Create a PyMa27Solver object representing a context to solve
-        the square symmetric linear system of equations
+        u"""Instantiate a :class:`PyMa27Solver` object.
+
+        Context to solve the square symmetric linear system of equations
 
             A x = b.
 
         A should be given in ll_mat format and should be symmetric.
-        The system will first be analyzed and factorized, for later
-        solution. Residuals will be computed dynamically if requested.
+        The system will first be analyzed and factorized, for later solution.
+        Residuals will be computed dynamically if requested.
 
         The factorization is a multi-frontal variant of the Bunch-Parlett
         factorization, i.e.
 
-            A = L B Lt
+            A = L B Lᵀ
 
         where L is unit lower triangular, and B is symmetric and block diagonal
         with either 1x1 or 2x2 blocks.
@@ -33,7 +34,7 @@ class PyMa27Solver(Sils):
         (positive or negative) definite, or symmetric quasi-definite (sqd).
         SQD matrices have the general form
 
-            [ E  Gt ]
+            [ E  Gᵀ ]
             [ G  -F ]
 
         where both E and F are positive definite. As a special case, positive
@@ -43,7 +44,9 @@ class PyMa27Solver(Sils):
 
         Currently accepted keyword arguments are:
 
-           sqd  Flag indicating symmetric quasi-definite matrix (default: False)
+        :keywords:
+            :sqd:  Flag indicating symmetric quasi-definite matrix
+                   (default: False)
 
         Example:
             from nlpy.linalg import pyma27
@@ -92,8 +95,8 @@ class PyMa27Solver(Sils):
         return (self.rank - self.neig, self.neig, self.n - self.rank)
 
     def solve(self, b, get_resid=True):
-        """
-        solve(b) solves the linear system of equations Ax = b.
+        """Solve the linear system of equations Ax = b.
+
         The solution will be found in self.x and residual in
         self.residual.
         """
@@ -101,14 +104,15 @@ class PyMa27Solver(Sils):
         return None
 
     def refine(self, b, nitref=3, tol=1.0e-8, **kwargs):
-        """
-        refine(b, tol, nitref) performs iterative refinement if necessary
-        until the scaled residual norm ||b-Ax||/(1+||b||) falls below the
-        threshold 'tol' or until nitref steps are taken.
-        Make sure you have called solve() with the same right-hand
-        side b before calling refine().
-        The residual vector self.residual will be updated to reflect
-        the updated approximate solution.
+        u"""Perform iterative refinement if necessary.
+
+        Iterative refinement is performed  until the scaled residual norm
+        ‖b-Ax‖/(1+‖b‖) falls below the threshold 'tol' or until nitref steps
+        are taken.
+        Make sure you have called `solve()` with the same right-hand side b
+        before calling `refine()`.
+        The residual vector `self.residual` will be updated to reflect the
+        updated approximate solution.
 
         By default, tol = 1.0e-8 and nitref = 3.
         """
@@ -116,16 +120,15 @@ class PyMa27Solver(Sils):
         return None
 
     def fetch_perm(self):
-        """
-        fetch_perm() returns the permutation vector p used
-        to compute the factorization of A. Rows and columns
-        were permuted so that
+        u"""Return the permutation vector p.
 
-              P^T  A P = L  B  L^T
+        The permutation vector is used to compute the factorization of A.
+        Rows and columns were permuted so that
 
-        where i-th row of P is the p(i)-th row of the
-        identity matrix, L is unit upper triangular and
-        B is block diagonal with 1x1 and 2x2 blocks.
+              Pᵀ A P = L B Lᵀ
+
+        where i-th row of P is the p(i)-th row of the identity matrix, L is
+        unit upper triangular and B is block diagonal with 1x1 and 2x2 blocks.
         """
         return self.context.fetchperm()
 
@@ -148,7 +151,7 @@ class PyMa27Solver(Sils):
 if __name__ == '__main__':
 
     import sys
-    from nlpy.tools import norms
+    from nlp.tools import norms
 
     M = spmatrix.ll_mat_from_mtx(sys.argv[1])
     (m, n) = M.shape
@@ -167,8 +170,8 @@ if __name__ == '__main__':
     sys.stderr.write(' Solving system... ')
     solver.solve(rhs)
     sys.stderr.write(' done\n')
-    sys.stderr.write(' Residual = %-g\n' % norms.norm_infty(solver.residual))
-    sys.stderr.write(' Relative error = %-g\n' % norms.norm_infty(solver.x - e))
+    sys.stderr.write(' Residual = %-g\n', norms.norm_infty(solver.residual))
+    sys.stderr.write(' Relative error = %-g\n', norms.norm_infty(solver.x - e))
     sys.stderr.write(' Performing iterative refinement if necessary... ')
     nr1 = nr = norms.norm_infty(solver.residual)
     nitref = 0
@@ -177,6 +180,6 @@ if __name__ == '__main__':
         solver.refine(rhs)
         nr1 = norms.norm_infty(solver.residual)
     sys.stderr.write(' done\n')
-    sys.stderr.write(' After %-d refinements:\n' % nitref)
-    sys.stderr.write(' Residual = %-g\n' % norms.norm_infty(solver.residual))
-    sys.stderr.write(' Relative error = %-g\n' % norms.norm_infty(solver.x - e))
+    sys.stderr.write(' After %-d refinements:\n', nitref)
+    sys.stderr.write(' Residual = %-g\n', norms.norm_infty(solver.residual))
+    sys.stderr.write(' Relative error = %-g\n', norms.norm_infty(solver.x - e))

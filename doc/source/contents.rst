@@ -14,7 +14,6 @@
    ordering
    scaling
    solvers
-   examples
    
 
 Indices and Tables

@@ -1,15 +1,14 @@
 ..  hsl_intallation:
 
-===================================
 Installation
-===================================
+============
 
 :program:`HSL.py` uses external packages that are not included in the :program:`HSL.py`
 source code because they are released under different licenses than the one used for
 :program:`HSL.py`. Hence we cannot distribute their code and you have to obtain them yourself.
 
 HSL routines
-============
+~~~~~~~~~~~~
 
 HSL website is divided into two parts:
 
@@ -18,18 +17,18 @@ HSL website is divided into two parts:
 
 2. **Academic access**, which contains more modern codes that are freely available for academic use only.
    It includes, amongst other, MC21, MC60, MA57, MA87, and MA97.
-   
+
 To obtain the HSL code, go to the `HSL website <http://www.hsl.rl.ac.uk/>`_ and download desired source code.
 
 You do **not** need to compile them by yourself. We will do it for you.
 
-Note: If you are an academic or a student, we recommend you download and use MA57 instead of MA27, because 
+Note: If you are an academic or a student, we recommend you download and use MA57 instead of MA27, because
 it can be considerably faster than MA27 on some problems.
 
 METIS (optional)
-================
+~~~~~~~~~~~~~~~~
 
-The linear solvers MA57, MA87 and MA97 can make use of the matrix ordering algorithms implemented in 
+The linear solvers MA57, MA87 and MA97 can make use of the matrix ordering algorithms implemented in
 `METIS <http://glaros.dtc.umn.edu/gkhome/metis/metis/overview>`_.
 If you are using one of these linear solvers, you should obtain the :program:`METIS` source code and compile it.
 
@@ -44,13 +43,13 @@ Then, :program:`metis` and its dependencies can be installed automatically in `/
 
 
 :program:`Python` interfaces
-============================
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :program:`HSL.py` installation is done in few simple steps:
 
-1. Clone the repository:
+1. Clone the repository
 
-  ..  code-block:: bash
+   .. code-block:: bash
 
       git clone https://github.com/PythonOptimizers/HSL.py.git
 
@@ -62,7 +61,7 @@ Then, :program:`metis` and its dependencies can be installed automatically in `/
 
   Python installer :program:`pip` is recommended for that
 
-  ..  code-block:: bash
+  .. code-block:: bash
 
       pip install numpy
       pip install CySparse
@@ -72,21 +71,20 @@ Then, :program:`metis` and its dependencies can be installed automatically in `/
 
 4. Compile and install the library:
 
-  The preferred way to install the library is to install it in its own `virtualenv`.
+   The preferred way to install the library is to install it in its own `virtualenv`.
+   To compile and install the library, just type
 
-  To compile and install the library, just type
+     .. code-block:: bash
 
-      ..  code-block:: bash
-
-          python setup.py install
+        python setup.py install
 
 
 
 Further dependencies
-====================
+~~~~~~~~~~~~~~~~~~~~
 
 Documentation
--------------
+^^^^^^^^^^^^^
 
 To generate the documentation you will need other Python dependencies:
 
@@ -97,7 +95,7 @@ which can be easily installed using :program:`pip`
 
 
 Testing
--------
+^^^^^^^
 Testing is done using :program:`nose`, so it needs to be installed before running them.
 
 
@@ -106,4 +104,3 @@ Note that a complete list of dependencies is provided in the :file:`requirements
 ..  code-block:: bash
 
     pip install -r requirements.txt
-

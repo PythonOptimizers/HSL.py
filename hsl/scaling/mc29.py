@@ -5,18 +5,17 @@ import numpy as np
 
 
 def MC29AD_scale(m, n, a_row, a_col, a_val, b=None):
-    """
-    Use MC29AD for scaling values of A (in place).
+    """Use MC29AD for scaling values of A (in place).
 
     Matrix A to scale must be provided in coordinate format
 
-    Args:
-        m: number of rows of A
-        n: number of columns of A
-        a_row: row indices of non zero elements of A
-        a_col: column indices of non zero elements of A
-        a_val: values of non zeros elements of A (in/out)
-        b: right-hand side (optional)
+    :parameters:
+        :m: number of rows of A
+        :n: number of columns of A
+        :a_row: row indices of non zero elements of A
+        :a_col: column indices of non zero elements of A
+        :a_val: values of non zeros elements of A (in/out)
+        :b: right-hand side (optional)
 
     Returns:
         (tuple):
@@ -26,7 +25,7 @@ def MC29AD_scale(m, n, a_row, a_col, a_val, b=None):
     # Obtain row and column scaling
     # We need to add one to row and column indices to comply to Fortran
     # format.
-    row_scale, col_scale, ifail = mc29ad(m, n, a_val, a_row+1, a_col+1)
+    row_scale, col_scale, ifail = mc29ad(m, n, a_val, a_row + 1, a_col + 1)
 
     if ifail == -1:
         raise ValueError("Number of rows < 1 or number of columns < 1")
@@ -50,21 +49,21 @@ def MC29AD_scale(m, n, a_row, a_col, a_val, b=None):
 
 
 def unscale(m, n, row_scale, col_scale, a_row, a_col, a_val, b=None):
-    """
-    Unscale values of A and possibly right-hand side using user-provided
-    row and column scaling factors.
+    """Unscale values of A and possibly right-hand side.
+
+    Unscaling is performed using user-provided row and column scaling factors.
 
     Matrix A to scale must be provided in coordinate format
 
-    Args:
-        m: number of rows of A
-        n: number of columns of A
-        row_scale: row scaling factors
-        col_scale: column scaling factors
-        a_row: row indices of non zero elements of A
-        a_col: column indices of non zero elements of A
-        a_val: values of non zeros elements of A (in/out)
-        b: right-hand side (optional)
+    :parameters:
+        :m: number of rows of A
+        :n: number of columns of A
+        :row_scale: row scaling factors
+        :col_scale: column scaling factors
+        :a_row: row indices of non zero elements of A
+        :a_col: column indices of non zero elements of A
+        :a_val: values of non zeros elements of A (in/out)
+        :b: right-hand side (optional)
     """
     # Unscale values of matrix A.
     a_val /= row_scale[a_row]

@@ -11,11 +11,10 @@ A Python interface to the HSL subroutine MC21AD.
 
 .. moduleauthor: dominique.orban@gerad.ca
 """
-
-import numpy as np
-import _mc21
+import hsl.ordering._mc21 as _mc21
 
 __docformat__ = 'restructuredtext'
+
 
 def nonzerodiag(nrow, colind, rowptr):
     """
@@ -46,5 +45,5 @@ def nonzerodiag(nrow, colind, rowptr):
         :nzdiag: The number of nonzeros on the diagonal of the permuted matrix.
     """
     lenrows = rowptr[1:] - rowptr[:-1]
-    perm, nzdiag = _mc21.mc21ad(colind+1, rowptr[:-1]+1, lenrows)
-    return (perm-1, nzdiag)
+    perm, nzdiag = _mc21.mc21ad(colind + 1, rowptr[:-1] + 1, lenrows)
+    return (perm - 1, nzdiag)
