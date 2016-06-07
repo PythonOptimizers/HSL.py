@@ -1,6 +1,5 @@
-"""
-Ma27: Direct multifrontal solution of symmetric systems
-"""
+# -*- coding: utf-8 -*-
+"""Ma27: Direct multifrontal solution of symmetric systems."""
 
 import numpy
 from pysparse.sparse.pysparseMatrix import PysparseMatrix
@@ -62,7 +61,7 @@ class PyMa27Solver(Sils):
         else:
             thisA = A
 
-        Sils.__init__(self, thisA, **kwargs)
+        super(PyMa27Solver, self).__init__(thisA, **kwargs)
 
         # Statistics on A
         self.rwords = 0      # Number of real words used during factorization
@@ -74,8 +73,8 @@ class PyMa27Solver(Sils):
         self.neig = 0        # "         negative eigenvalues detected
 
         # Factors
-        self.L = spmatrix.ll_mat(self.n, self.n, 0)
-        self.B = spmatrix.ll_mat_sym(self.n, 0)
+        # self.L = spmatrix.ll_mat(self.n, self.n, 0)
+        # self.B = spmatrix.ll_mat_sym(self.n, 0)
 
         # Analyze and factorize matrix
         self.context = _pyma27.factor(thisA, self.sqd)
@@ -83,6 +82,14 @@ class PyMa27Solver(Sils):
          self.n2x2pivots, self.neig, self.rank) = self.context.stats()
 
         self.isFullRank = (self.rank == self.n)
+
+    @property
+    def inertia(self):
+        u"""Return inertia of matrix A.
+
+        Inertia of a matrix is given by (# of λ>0, # of λ<0, # λ=0).
+        """
+        return (self.rank - self.neig, self.neig, self.n - self.rank)
 
     def solve(self, b, get_resid=True):
         """
@@ -122,19 +129,20 @@ class PyMa27Solver(Sils):
         """
         return self.context.fetchperm()
 
-    def fetch_lb(self):
-        """
-        fetch_lb() returns the factors L and B of A such that
-
-              P^T  A P = L  B  L^T
-
-        where P is as in fetch_perm(), L is unit upper
-        triangular and B is block diagonal with 1x1 and 2x2
-        blocks. Access to the factors is available as soon
-        as a PyMa27Solver has been instantiated.
-        """
-        self.context.fetchlb(self.L, self.B)
-        return None
+    # Not working properly
+    # def fetch_lb(self):
+    #     """
+    #     fetch_lb() returns the factors L and B of A such that
+    #
+    #           P^T  A P = L  B  L^T
+    #
+    #     where P is as in fetch_perm(), L is unit upper
+    #     triangular and B is block diagonal with 1x1 and 2x2
+    #     blocks. Access to the factors is available as soon
+    #     as a PyMa27Solver has been instantiated.
+    #     """
+    #     self.context.fetchlb(self.L, self.B)
+    #     return None
 
 
 if __name__ == '__main__':

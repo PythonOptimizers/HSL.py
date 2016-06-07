@@ -1,8 +1,6 @@
-"""
-Ma57: Direct multifrontal solution of symmetric systems
-"""
+# -*- coding: utf-8 -*-
+"""Ma57: Direct multifrontal solution of symmetric systems."""
 
-import numpy
 from pysparse.sparse.pysparseMatrix import PysparseMatrix
 from sils import Sils
 from hsl.solvers import _pyma57
@@ -82,7 +80,7 @@ class PyMa57Solver(Sils):
         else:
             thisA = A
 
-        Sils.__init__(self, thisA, **kwargs)
+        super(PyMa57Solver, self).__init__(thisA, **kwargs)
 
         # Statistics on A
         self.nzFact = 0      # Number of nonzeros in factors
@@ -100,8 +98,19 @@ class PyMa57Solver(Sils):
         # Analyze and factorize matrix
         self.context = _pyma57.analyze(thisA, self.sqd)
         self.factorized = False
-        if factorize: self.factorize(thisA)
+        if factorize:
+            self.factorize(thisA)
         return
+
+    @property
+    def inertia(self):
+        u"""Return inertia of matrix A.
+
+        Inertia of a matrix is given by (# of λ>0, # of λ<0, # λ=0).
+        """
+        if not self.factorized:
+            raise TypeError("Factorization must be performed first.")
+        return (self.rank - self.neig, self.neig, self.n - self.rank)
 
     def factorize(self, A):
         """
@@ -186,8 +195,9 @@ class PyMa57Solver(Sils):
 if __name__ == '__main__':
 
     import sys
-    from pysparse.sparse import spmatrix
     import numpy as np
+
+    from pysparse.sparse import spmatrix
 
     M = spmatrix.ll_mat_from_mtx(sys.argv[1])
     (m, n) = M.shape
@@ -197,8 +207,8 @@ if __name__ == '__main__':
     if not M.issym:
         sys.stderr('Matrix must be symmetric')
         sys.exit(2)
-    e = numpy.ones(n, 'd')
-    rhs = numpy.zeros(n, 'd')
+    e = np.ones(n, 'd')
+    rhs = np.zeros(n, 'd')
     M.matvec(e, rhs)
     sys.stderr.write(' Factorizing matrix... ')
     solver = PyMa57Solver(M)

@@ -55,7 +55,7 @@ static void          Pyma27_dealloc(    Pyma27Object *self                  );
 static PyObject     *Pyma27_getattr(    Pyma27Object *self,  char *name     );
 static PyObject     *Pyma27_Stats(      Pyma27Object *self,  PyObject *args );
 static PyObject     *Pyma27_fetch_perm( Pyma27Object *self                  );
-static PyObject     *Pyma27_fetch_lb(   Pyma27Object *self,  PyObject *args );
+// static PyObject     *Pyma27_fetch_lb(   Pyma27Object *self,  PyObject *args );
 static Pyma27Object *NewPyma27Object(   LLMatObject  *llmat, PyObject *sqd  );
 extern PyObject *newCSRMatObject(int dim[], int nnz);
 void coord2csr( int n, int nz, int *irow, int *jcol, double *val,
@@ -154,111 +154,113 @@ static PyObject *Pyma27_fetch_perm( Pyma27Object *self ) {
 }
 
 /* ========================================================================== */
-
-static char Pyma27_fetch_lb_Doc[] = "Fetch factors of A computed by MA27";
-
-static PyObject *Pyma27_fetch_lb( Pyma27Object *self, PyObject *args ) {
-
-    PyObject     *Lmat, *Dmat;
-    LLMatObject  *L, *D;
-    double       *l, *d;
-    int          *id, *jd, *il, *jl;  /* L and D^{-1} in coordinate format */
-    int           nnzL, nnzD, nblk, n1x1, n2x2, latop, liwm1, *iwp1, *colrhs;
-    int           i;
-    int           n = self->data->n;
-    //int *inv_perm, ii, jj;
-
-    if( !PyArg_ParseTuple( args, "OO", &Lmat, &Dmat ) ) return NULL;
-    L = (LLMatObject *)Lmat;
-    D = (LLMatObject *)Dmat;
-
-    /* Obtain the number of nonzeros in factors L and D^{-1} */
-    nblk = abs( self->data->iw[0] );   /* # block pivots */
-    if( nblk == 0 ) {
-        Py_INCREF( Py_None );
-        return Py_None;
-    }
-    iwp1 = (self->data->iw)+1;
-    liwm1 = self->data->liw - 1;
-    MA27QDEMASC( &n, iwp1, &liwm1, self->data->iw1,
-                 &nblk, &latop, self->data->icntl );
-
-    n2x2 = self->data->info[13];   /* No. of 2x2 pivots. */
-    n1x1 = n - 2*n2x2;             /* No. of 1x1 pivots. */
-    nnzD = n1x1 + 4*n2x2;          /* 1 nz for each 1x1, 4 nz's for each 2x2. */
-    nnzL = n + latop;              /* An upper bound only, not exact. */
-
-    //printf( " It would appear that nnzl = %-d, nnzd = %-d, latop = %-d, n2x2 = %-d, nblk = %-d\n",
-     //       nnzl, nnzd, latop, n2x2, nblk );
-
-    /* Allocate space for D^{-1} and L */
-    d  = (double *)HSL_Calloc( nnzD, sizeof(double) );
-    l  = (double *)HSL_Calloc( nnzL, sizeof(double) );
-    id = (int *)HSL_Calloc( nnzD, sizeof(int) );
-    jd = (int *)HSL_Calloc( nnzD, sizeof(int) );
-    il = (int *)HSL_Calloc( nnzL, sizeof(int) );
-    jl = (int *)HSL_Calloc( nnzL, sizeof(int) );
-
-    colrhs = (int *)HSL_Calloc( self->data->maxfrt, sizeof(int) );
-
-    /* Obtain lower triangle of D^{-1} and upper triangle of L */
-    MA27FACTORS( &n, self->data->factors, &(self->data->la),
-                 iwp1, &liwm1, &(self->data->maxfrt), self->data->iw1,
-                 &nblk, &latop, self->data->icntl, colrhs,
-                 &nnzD, id, jd, d,
-                 &nnzL, il, jl, l );
-
-    /*
-    if( !(inv_perm = (int *)malloc( self->data->n * sizeof( int ) )) ) {
-        printf( " Oops! Can't malloc inv_perm\n" );
-        return NULL;
-    }
-    for( i = 0; i < self->data->n; i++ )
-        inv_perm[ self->data->ikeep[i]-1 ] = i+1;
-
-    printf( "inv_perm = [" );
-    for( i = 0; i < self->data->n; i++ )
-        printf( " %-d ", inv_perm[i] );
-    printf( "]\n" );
-    */
-
-    /* At this point, nnzL is exact.  Build sparse matrices D^{-1}
-     * and L.  Account for 0-based indexing */
-    for( i = 0; i < nnzL; i++ ) {
-        //ii = inv_perm[ il[i]-1 ];
-        //jj = inv_perm[ jl[i]-1 ];
-        //ii = self->data->ikeep[ il[i]-1 ];
-        //jj = self->data->ikeep[ jl[i]-1 ];
-        //SpMatrix_LLMatSetItem( L, jj-1, ii-1, l[i] );
-        SpMatrix_LLMatSetItem( L, jl[i]-1, il[i]-1, l[i] );
-    }
-
-    for( i = 0; i < nnzD; i++ )
-        SpMatrix_LLMatSetItem( D, id[i]-1, jd[i]-1, d[i] );
-
-    /* Build L in compressed sparse row format */
-    /*
-    Lcsr = (CSRMatObject *)newCSRMatObject( L->dim, nnzl );
-    if( Lcsr != NULL ) {
-        coord2csr( self->data->n, nnzl, il, jl, l,
-                   Lcsr->ind, Lcsr->col, Lcsr->val );
-    }
-    */
-
-    //free( inv_perm );
-    HSL_Free( d );
-    HSL_Free( id );
-    HSL_Free( jd );
-    HSL_Free( l );
-    HSL_Free( il );
-    HSL_Free( jl );
-    HSL_Free( colrhs );
-
-    self->data->fetched = 1;
-
-    Py_INCREF( Py_None );
-    return Py_None;
-}
+// BUG: L is not an upper triangular matrix.
+//
+// static char Pyma27_fetch_lb_Doc[] = "Fetch factors of A computed by MA27";
+//
+// static PyObject *Pyma27_fetch_lb( Pyma27Object *self, PyObject *args ) {
+//
+//     PyObject     *Lmat, *Dmat;
+//     LLMatObject  *L, *D;
+//     double       *l, *d;
+//     int          *id, *jd, *il, *jl;  /* L and D^{-1} in coordinate format */
+//     int           nnzL, nnzD, nblk, n1x1, n2x2, latop, liwm1, *iwp1, *colrhs;
+//     int           i;
+//     int           n = self->data->n;
+//     //int *inv_perm, ii, jj;
+//
+//     if( !PyArg_ParseTuple( args, "OO", &Lmat, &Dmat ) ) return NULL;
+//     L = (LLMatObject *)Lmat;
+//     D = (LLMatObject *)Dmat;
+//
+//     /* Obtain the number of nonzeros in factors L and D^{-1} */
+//     nblk = abs( self->data->iw[0] );   /* # block pivots */
+//     if( nblk == 0 ) {
+//         Py_INCREF( Py_None );
+//         return Py_None;
+//     }
+//     iwp1 = (self->data->iw)+1;
+//     liwm1 = self->data->liw - 1;
+//     MA27QDEMASC( &n, iwp1, &liwm1, self->data->iw1,
+//                  &nblk, &latop, self->data->icntl );
+//
+//     n2x2 = self->data->info[13];   /* No. of 2x2 pivots. */
+//     n1x1 = n - 2*n2x2;             /* No. of 1x1 pivots. */
+//     nnzD = n1x1 + 4*n2x2;          /* 1 nz for each 1x1, 4 nz's for each 2x2. */
+//     nnzL = n + latop;              /* An upper bound only, not exact. */
+//
+//     //printf( " It would appear that nnzl = %-d, nnzd = %-d, latop = %-d, n2x2 = %-d, nblk = %-d\n",
+//      //       nnzl, nnzd, latop, n2x2, nblk );
+//
+//     /* Allocate space for D^{-1} and L */
+//     d  = (double *)HSL_Calloc( nnzD, sizeof(double) );
+//     l  = (double *)HSL_Calloc( nnzL, sizeof(double) );
+//     id = (int *)HSL_Calloc( nnzD, sizeof(int) );
+//     jd = (int *)HSL_Calloc( nnzD, sizeof(int) );
+//     il = (int *)HSL_Calloc( nnzL, sizeof(int) );
+//     jl = (int *)HSL_Calloc( nnzL, sizeof(int) );
+//
+//     colrhs = (int *)HSL_Calloc( self->data->maxfrt, sizeof(int) );
+//
+//     /* Obtain lower triangle of D^{-1} and upper triangle of L */
+//     MA27FACTORS( &n, self->data->factors, &(self->data->la),
+//                  iwp1, &liwm1, &(self->data->maxfrt), self->data->iw1,
+//                  &nblk, &latop, self->data->icntl, colrhs,
+//                  &nnzD, id, jd, d,
+//                  &nnzL, il, jl, l );
+//
+//     /*
+//     if( !(inv_perm = (int *)malloc( self->data->n * sizeof( int ) )) ) {
+//         printf( " Oops! Can't malloc inv_perm\n" );
+//         return NULL;
+//     }
+//     for( i = 0; i < self->data->n; i++ )
+//         inv_perm[ self->data->ikeep[i]-1 ] = i+1;
+//
+//     printf( "inv_perm = [" );
+//     for( i = 0; i < self->data->n; i++ )
+//         printf( " %-d ", inv_perm[i] );
+//     printf( "]\n" );
+//     */
+//
+//     /* At this point, nnzL is exact.  Build sparse matrices D^{-1}
+//      * and L.  Account for 0-based indexing */
+//     for( i = 0; i < nnzL; i++ ) {
+//         //ii = inv_perm[ il[i]-1 ];
+//         //jj = inv_perm[ jl[i]-1 ];
+//         //ii = self->data->ikeep[ il[i]-1 ];
+//         //jj = self->data->ikeep[ jl[i]-1 ];
+//         //SpMatrix_LLMatSetItem( L, jj-1, ii-1, l[i] );
+//         // printf( "(%2d,%2d) %-6.2e ", jl[i], il[i], l[i] );
+//         SpMatrix_LLMatSetItem( L, jl[i]-1, il[i]-1, l[i] );
+//     }
+//
+//     for( i = 0; i < nnzD; i++ )
+//         SpMatrix_LLMatSetItem( D, id[i]-1, jd[i]-1, d[i] );
+//
+//     /* Build L in compressed sparse row format */
+//     /*
+//     Lcsr = (CSRMatObject *)newCSRMatObject( L->dim, nnzl );
+//     if( Lcsr != NULL ) {
+//         coord2csr( self->data->n, nnzl, il, jl, l,
+//                    Lcsr->ind, Lcsr->col, Lcsr->val );
+//     }
+//     */
+//
+//     //free( inv_perm );
+//     HSL_Free( d );
+//     HSL_Free( id );
+//     HSL_Free( jd );
+//     HSL_Free( l );
+//     HSL_Free( il );
+//     HSL_Free( jl );
+//     HSL_Free( colrhs );
+//
+//     self->data->fetched = 1;
+//
+//     Py_INCREF( Py_None );
+//     return Py_None;
+// }
 
 /* ========================================================================== */
 
@@ -396,8 +398,8 @@ static PyMethodDef Pyma27_special_methods[] = {
     METH_VARARGS, Pyma27_ma27_Doc       },
   { "fetchperm", (PyCFunction)Pyma27_fetch_perm,
     METH_VARARGS, Pyma27_fetch_perm_Doc },
-  { "fetchlb",   (PyCFunction)Pyma27_fetch_lb,
-    METH_VARARGS, Pyma27_fetch_lb_Doc   },
+  // { "fetchlb",   (PyCFunction)Pyma27_fetch_lb,
+  //   METH_VARARGS, Pyma27_fetch_lb_Doc   },
   { "stats",     (PyCFunction)Pyma27_Stats,
     METH_VARARGS, Pyma27_Stats_Doc      },
   { "refine",    (PyCFunction)Pyma27_refine,

@@ -7,7 +7,7 @@ from the Harwell Subroutine Library (http://hsl.rl.ac.uk).
 import numpy
 
 
-class Sils:
+class Sils(object):
     """
     Abstract class for the factorization and solution of symmetric indefinite
     systems of linear equations. The methods of this class must be overridden.
