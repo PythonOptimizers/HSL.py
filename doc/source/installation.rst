@@ -76,9 +76,9 @@ Branch `master` (recommanded)
    The preferred way to install the library is to install it in its own `virtualenv`.
    To compile and install the library, just type
 
-     .. code-block:: bash
+   .. code-block:: bash
 
-        python setup.py install
+      python setup.py install
 
 
 Branch `develop` (experimented users only)
@@ -97,7 +97,7 @@ Branch `develop` (experimented users only)
 2. Install the :program:`Python` dependencies:
 
 - :program:`NumPy`
-- :program: `cygenja`
+- :program:`cygenja`
 - :program:`CySparse` <---- optional
 
   Python installer :program:`pip` is recommended for that
@@ -113,9 +113,9 @@ Branch `develop` (experimented users only)
 
 4. Generate code and `setup.py` files
 
-  .. code-block::
+   .. code-block:: bash
 
-    python generate_code.py
+      python generate_code.py
 
 
 5. Compile and install the library:
@@ -123,9 +123,9 @@ Branch `develop` (experimented users only)
    The preferred way to install the library is to install it in its own `virtualenv`.
    To compile and install the library, just type
 
-     .. code-block:: bash
+   .. code-block:: bash
 
-        python setup.py install
+      python setup.py install
 
 Further dependencies
 ~~~~~~~~~~~~~~~~~~~~
@@ -143,7 +143,17 @@ which can be easily installed using :program:`pip`
 
 Testing
 ^^^^^^^
-Testing is done using :program:`nose`, so it needs to be installed before running them.
+Testing is done using :program:`py.test`, so it needs to be installed before running them.
+
+.. code-block:: bash
+
+    pip install pytest
+
+In the root directory, type
+
+.. code-block:: bash
+
+    py.test
 
 
 Note that a complete list of dependencies is provided in the :file:`requirements.txt` file. You can easily install all of them with:
