@@ -14,7 +14,8 @@
    ordering
    scaling
    solvers
-   
+   tools
+
 
 Indices and Tables
 ==================

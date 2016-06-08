@@ -293,7 +293,7 @@ if build_cysparse_ext:
 
 
 packages_list = ['hsl', 'hsl.ordering', 'hsl.scaling', 'hsl.solvers',
-                 'hsl.solvers.src']
+                 'hsl.solvers.src', 'hsl.tools']
 
 CLASSIFIERS = """\
 Development Status :: 4 - Beta

@@ -1,7 +1,7 @@
-"""
-Illustrate usage of the pymc21 module, using an input matrix in Harwell-Boeing
-or Rutherford-Boeing format. Supply a file name as input argument on the
-command line and uncomment below as appropriate.
+"""Illustrate usage of Harwell-Boeing or Rutherford-Boeing readers and mc21.
+
+Supply a file name as input argument on the command line and uncomment below as
+appropriate.
 """
 
 import sys
@@ -13,7 +13,7 @@ if len(sys.argv) < 2:
     sys.exit(1)
 
 fname = sys.argv[1]
-#M = HarwellBoeingMatrix(fname, patternOnly=True, readRhs=False)
+# M = HarwellBoeingMatrix(fname, patternOnly=True, readRhs=False)
 M = RutherfordBoeingData(fname, patternOnly=True, readRhs=False)
 
 if M.nrow != M.ncol:
@@ -33,5 +33,7 @@ try:
     right = pylab.subplot(122)
     fast_spy(M.nrow, M.ncol, perm[irow], jcol, sym=M.issym, ax=right.get_axes())
     pylab.show()
+    # pylab.savefig('mc21.pdf', bbox_inches='tight')
+
 except:
     pass
