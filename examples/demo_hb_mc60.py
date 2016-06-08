@@ -2,9 +2,8 @@
 
 import numpy as np
 from hsl.ordering.mc60 import sloan, rcmk
-#TODO: what todo with those...???
-from pyorder.tools.hrb import HarwellBoeingMatrix, RutherfordBoeingData
-from pyorder.tools.spy import FastSpy
+from hsl.tools.hrb import HarwellBoeingMatrix, RutherfordBoeingData
+from hsl.tools.spy import fast_spy
 import pylab
 import sys
 
@@ -30,11 +29,11 @@ perm, rinfo = rcmk(M.nrow, M.ind, M.ip)
 # Plot original matrix
 (_, irow, jcol) = M.find()
 left = pylab.subplot(121)
-FastSpy(M.nrow, M.ncol, irow, jcol, sym=M.issym,
-        ax=left.get_axes(), title='Original')
+fast_spy(M.nrow, M.ncol, irow, jcol, sym=M.issym,
+         ax=left.get_axes(), title='Original')
 
 # Apply permutation and plot reordered matrix
 right = pylab.subplot(122)
-FastSpy(M.nrow, M.ncol, perm[irow], perm[jcol], sym=M.issym,
-        ax=right.get_axes(), title='Reordered')
+fast_spy(M.nrow, M.ncol, perm[irow], perm[jcol], sym=M.issym,
+         ax=right.get_axes(), title='Reordered')
 pylab.show()

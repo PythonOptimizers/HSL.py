@@ -115,10 +115,10 @@ if __name__ == '__main__':
     print 'symmetric, Hermitian, skew: ', A.symmetric, A.Hermitian, A.skewsym
     print 'comments:' ; print A.comments
 
-    from pyorder.tools.spy import FastSpy
+    from pyorder.tools.spy import fast_spy
     import matplotlib.pyplot as plt
     fig = plt.figure()
-    FastSpy(A.nrow,A.ncol,A.irow,A.jcol,
+    fast_spy(A.nrow,A.ncol,A.irow,A.jcol,
             sym=(A.symmetric or A.Hermitian or A.skewsym),
             #val=A.values,
             ax=fig.gca(),

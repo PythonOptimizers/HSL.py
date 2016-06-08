@@ -6,15 +6,16 @@ from hsl.solvers.src._cyma27_cysparse_INT32_FLOAT64 import CySparseMA27Solver_IN
 import sys
 
 
-A = LLSparseMatrix(mm_filename=sys.argv[1], itype=types.INT32_T, dtype=types.FLOAT64_T)
+A = LLSparseMatrix(mm_filename=sys.argv[1], itype=types.INT32_T,
+                   dtype=types.FLOAT64_T)
 
 print A
 
 
 (n, m) = A.shape
 e = np.ones(n, 'd')
-#rhs = np.zeros(n, 'd')
-rhs = A*e
+# rhs = np.zeros(n, 'd')
+rhs = A * e
 
 
 context = CySparseMA27Solver_INT32_FLOAT64(A.nrow, A.ncol, A.nnz)
@@ -31,7 +32,7 @@ print perm
 
 
 print 'Solve:'
-x, residual  = context.solve(rhs, True)
+x, residual = context.solve(rhs, True)
 print '  x:'
 print x
 print '  residual:'
@@ -43,4 +44,3 @@ print '  new_x: '
 print new_x
 print '  new_res: '
 print new_res
-
