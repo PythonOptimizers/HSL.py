@@ -21,6 +21,17 @@ In order to build previous interfaces, you **need** to provide source code from 
 All required packages are available free of charge to academics.
 Just follow hyperlinks in upper section and fill the licence agreement on their website and you are done!
 
+Some routines such as MA57 optionnaly uses the [METIS](http://glaros.dtc.umn.edu/gkhome/views/metis) library.
+If you are under OS X, a [Homebrew](http://brew.sh) formula is available. 
+Follow the instructions to install Homebrew. Then, METIS and its dependencies can be installed automatically in `/usr/local` by typing
+
+            brew tap homebrew/science
+
+            brew install metis4
+
+Only METIS version 4 is supported by MA57.
+
+
 HSL.py also depends on
 
 - NumPy;
