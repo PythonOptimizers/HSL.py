@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include "nlpy.h"
+#include "hslpy.h"
 
 #ifdef  __FUNCT__
 #undef  __FUNCT__

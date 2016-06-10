@@ -46,11 +46,11 @@ class PyMa57Solver(Sils):
 
         Example:
 
-        >>> import pyma57
-        >>> import numpy
+        >>> from hsl.solvers import pyma57
+        >>> from numpy.linalg import norm
         >>> P = pyma57.PyMa57Solver(A)
         >>> P.solve(rhs, get_resid=True)
-        >>> print numpy.linalg.norm(P.residual)
+        >>> print norm(P.residual)
 
         PyMa57Solver relies on the sparse direct multifrontal code MA57
         from the Harwell Subroutine Library.

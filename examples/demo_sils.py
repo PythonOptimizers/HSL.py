@@ -6,9 +6,9 @@
 # from hsl.solvers.pyma27 import PyMa27Solver as LBLContext
 from hsl.solvers.pyma57 import PyMa57Solver as LBLContext
 from pysparse import spmatrix
-from nlpy.tools import norms
-from nlpy.tools.timing import cputime
-import numpy
+from numpy.linalg import norm
+import timeit
+import numpy as np
 
 
 def Hilbert(n):
@@ -43,7 +43,7 @@ def Ma27SpecSheet():
     A[4, 1] = 6
     A[4, 4] = 1
 
-    rhs = numpy.ones(5, 'd')
+    rhs = np.ones(5, 'd')
     rhs[0] = 8
     rhs[1] = 45
     rhs[2] = 31
@@ -56,22 +56,22 @@ def Ma27SpecSheet():
 def solve_system(A, rhs, itref_threshold=1.0e-6, nitrefmax=5, **kwargs):
 
     # Obtain Sils context object
-    t = cputime()
+    t = timeit.default_timer()
     LBL = LBLContext(A, **kwargs)
-    t_analyze = cputime() - t
+    t_analyze = timeit.default_timer() - t
 
     # Solve system and compute residual
-    t = cputime()
+    t = timeit.default_timer()
     LBL.solve(rhs)
-    t_solve = cputime() - t_analyze
+    t_solve = timeit.default_timer() - t
 
     # Compute residual norm
-    nrhsp1 = norms.norm_infty(rhs) + 1
-    nr = norms.norm2(LBL.residual) / nrhsp1
+    nrhsp1 = norm(rhs, ord=np.infty) + 1
+    nr = norm(LBL.residual) / nrhsp1
 
     # If residual not small, perform iterative refinement
     LBL.refine(rhs, tol=itref_threshold, nitref=nitrefmax)
-    nr1 = norms.norm_infty(LBL.residual) / nrhsp1
+    nr1 = norm(LBL.residual, ord=np.infty) / nrhsp1
 
     return (LBL.x, LBL.residual, nr, nr1, t_analyze, t_solve, LBL.neig)
 
@@ -93,19 +93,20 @@ if __name__ == '__main__':
     # Solve example from the spec sheet
     (A, rhs) = Ma27SpecSheet()
     (x, r, nr, nr1, t_an, t_sl, neig) = solve_system(A, rhs)
-    exact = numpy.arange(5, dtype='d') + 1
-    relres = norms.norm2(x - exact) / norms.norm2(exact)
-    sys.stdout.write(res_fmt, 'Spec sheet', relres, nr, nr1, t_an, t_sl, neig)
+    exact = np.arange(5, dtype='d') + 1
+    relres = norm(x - exact) / norm(exact)
+    sys.stdout.write(res_fmt %
+                     ('Spec sheet', relres, nr, nr1, t_an, t_sl, neig))
 
     # Solve example with Hilbert matrix
     n = 10
     H = Hilbert(n)
-    e = numpy.ones(n, 'd')
-    rhs = numpy.empty(n, 'd')
+    e = np.ones(n, 'd')
+    rhs = np.empty(n, 'd')
     H.matvec(e, rhs)
     (x, r, nr, nr1, t_an, t_sl, neig) = solve_system(H, rhs)
-    relres = norms.norm2(x - e) / norms.norm2(e)
-    sys.stdout.write(res_fmt, 'Hilbert', relres, nr, nr1, t_an, t_sl, neig)
+    relres = norm(x - e) / norm(e)
+    sys.stdout.write(res_fmt % ('Hilbert', relres, nr, nr1, t_an, t_sl, neig))
 
     # Process matrices given on the command line
     for matrix in matrices:
@@ -113,13 +114,14 @@ if __name__ == '__main__':
         (m, n) = M.shape
         if m != n:
             break
-        e = numpy.ones(n, 'd')
-        rhs = numpy.empty(n, 'd')
+        e = np.ones(n, 'd')
+        rhs = np.empty(n, 'd')
         M.matvec(e, rhs)
         (x, r, nr, nr1, t_an, t_sl, neig) = solve_system(M, rhs)
-        relres = norms.norm2(x - e) / norms.norm2(e)
+        relres = norm(x - e) / norm(e)
         probname = os.path.basename(matrix)
         if probname[-4:] == '.mtx':
             probname = probname[:-4]
-        sys.stdout.write(res_fmt, probname, relres, nr, nr1, t_an, t_sl, neig)
+        sys.stdout.write(res_fmt %
+                         (probname, relres, nr, nr1, t_an, t_sl, neig))
     sys.stderr.write('-' * lhead + '\n')

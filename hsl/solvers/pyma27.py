@@ -49,13 +49,14 @@ class PyMa27Solver(Sils):
                    (default: False)
 
         Example:
-            from nlpy.linalg import pyma27
-            from nlpy.tools import norms
-            P = pyma27.PyMa27Solver(A)
-            P.solve(rhs, get_resid = True)
-            print norms.norm2(P.residual)
 
-        Pyma27 relies on the sparse direct multifrontal code MA27
+        >>>> from hsl.solvers import pyma27
+        >>>> from numpy.linalg import norm
+        >>>> P = pyma27.PyMa27Solver(A)
+        >>>> P.solve(rhs, get_resid = True)
+        >>>> print norm(P.residual)
+
+        PyMa27 relies on the sparse direct multifrontal code MA27
         from the Harwell Subroutine Library archive.
         """
 

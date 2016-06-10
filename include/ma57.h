@@ -9,7 +9,7 @@
  * ============================================
  */
 
-#include "nlpy.h"
+#include "hslpy.h"
 
 #define LOGMSG(...) if (ma57->logfile) fprintf(ma57->logfile, __VA_ARGS__)
 
