@@ -1,0 +1,416 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Ordering method for sparse matrices &mdash; HSL.py: Harwell Subroutine Library wrappers in Python/Cython</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/julia.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="HSL.py: Harwell Subroutine Library wrappers in Python/Cython" href="index.html"/>
+        <link rel="next" title="Scaling method for sparse matrices" href="scaling.html"/>
+        <link rel="prev" title="Installation" href="installation.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="contents.html" class="icon icon-home"> HSL.py
+          
+
+          
+          </a>
+          <h1>HSL.py</h1>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+              <ul>
+<li><a class="reference internal" href="#">Ordering method for sparse matrices</a><ul>
+<li><a class="reference internal" href="#the-mc21-module">The <code class="docutils literal"><span class="pre">mc21</span></code> Module</a></li>
+<li><a class="reference internal" href="#the-mc60-module">The <code class="docutils literal"><span class="pre">mc60</span></code> Module</a><ul>
+<li><a class="reference internal" href="#sloan-s-algorithm">Sloan&#8217;s algorithm</a></li>
+<li><a class="reference internal" href="#reverse-cuthill-mckee-algorithm">Reverse Cuthill-McKee algorithm</a></li>
+<li><a class="reference internal" href="#example">Example</a><ul>
+<li><a class="reference internal" href="#using-a-matrix-market-matrix-through-cysparse">Using a matrix market matrix through <strong class="program">CySparse</strong></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="contents.html">HSL.py</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="contents.html">Docs</a> &raquo;</li>
+        
+      <li>Ordering method for sparse matrices</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/PythonOptimizers/HSL.py/blob/master/doc/source/ordering.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="ordering-method-for-sparse-matrices">
+<span id="ordering-page"></span><h1>Ordering method for sparse matrices<a class="headerlink" href="#ordering-method-for-sparse-matrices" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="the-mc21-module">
+<h2>The <code class="xref py py-mod docutils literal"><span class="pre">mc21</span></code> Module<a class="headerlink" href="#the-mc21-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="the-mc60-module">
+<h2>The <code class="xref py py-mod docutils literal"><span class="pre">mc60</span></code> Module<a class="headerlink" href="#the-mc60-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="sloan-s-algorithm">
+<h3>Sloan&#8217;s algorithm<a class="headerlink" href="#sloan-s-algorithm" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="reverse-cuthill-mckee-algorithm">
+<h3>Reverse Cuthill-McKee algorithm<a class="headerlink" href="#reverse-cuthill-mckee-algorithm" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="example">
+<h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;MC60 demo from the HSL MC60 spec sheet.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">hsl.ordering</span> <span class="k">import</span> <span class="n">_mc60</span>
+
+<span class="n">icntl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">6</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># Abort on error</span>
+<span class="n">jcntl</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># Sloan&#39;s alg with auto choice</span>
+<span class="n">weight</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>                 <span class="c1"># Weights in Sloan&#39;s alg</span>
+
+<span class="c1"># Store lower triangle of symmetric matrix in csr format (1-based)</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">icptr</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">11</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>  <span class="c1"># nnz = 10</span>
+<span class="n">irn</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">icptr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="n">irn</span><span class="p">[:</span><span class="n">icptr</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+
+<span class="c1"># Check data</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">_mc60</span><span class="o">.</span><span class="n">mc60ad</span><span class="p">(</span><span class="n">irn</span><span class="p">,</span> <span class="n">icptr</span><span class="p">,</span> <span class="n">icntl</span><span class="p">)</span>
+
+<span class="c1"># Compute supervariables</span>
+<span class="n">nsup</span><span class="p">,</span> <span class="n">svar</span><span class="p">,</span> <span class="nb">vars</span> <span class="o">=</span> <span class="n">_mc60</span><span class="o">.</span><span class="n">mc60bd</span><span class="p">(</span><span class="n">irn</span><span class="p">,</span> <span class="n">icptr</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s1">&#39;The number of supervariables is &#39;</span><span class="p">,</span> <span class="n">nsup</span>
+
+<span class="c1"># Permute reduced matrix</span>
+<span class="n">permsv</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">nsup</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="n">pair</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="mi">2</span><span class="p">,</span> <span class="n">nsup</span> <span class="o">/</span> <span class="mi">2</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="n">info</span> <span class="o">=</span> <span class="n">_mc60</span><span class="o">.</span><span class="n">mc60cd</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">irn</span><span class="p">,</span> <span class="n">icptr</span><span class="p">[:</span><span class="n">nsup</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span>
+                    <span class="nb">vars</span><span class="p">[:</span><span class="n">nsup</span><span class="p">],</span> <span class="n">jcntl</span><span class="p">,</span> <span class="n">permsv</span><span class="p">,</span> <span class="n">weight</span><span class="p">,</span> <span class="n">pair</span><span class="p">)</span>
+
+<span class="c1"># Compute profile and wavefront</span>
+<span class="n">rinfo</span> <span class="o">=</span> <span class="n">_mc60</span><span class="o">.</span><span class="n">mc60fd</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">irn</span><span class="p">,</span> <span class="n">icptr</span><span class="p">[:</span><span class="n">nsup</span> <span class="o">+</span> <span class="mi">1</span><span class="p">],</span> <span class="nb">vars</span><span class="p">[:</span><span class="n">nsup</span><span class="p">],</span> <span class="n">permsv</span><span class="p">)</span>
+
+<span class="c1"># Obtain variable permutation from supervariable permutation</span>
+<span class="n">perm</span><span class="p">,</span> <span class="n">possv</span> <span class="o">=</span> <span class="n">_mc60</span><span class="o">.</span><span class="n">mc60dd</span><span class="p">(</span><span class="n">svar</span><span class="p">,</span> <span class="nb">vars</span><span class="p">[:</span><span class="n">nsup</span><span class="p">],</span> <span class="n">permsv</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s1">&#39;The variable permutation is &#39;</span><span class="p">,</span> <span class="n">perm</span>    <span class="c1"># 1-based</span>
+<span class="nb">print</span> <span class="s1">&#39;The profile is &#39;</span><span class="p">,</span> <span class="n">rinfo</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="nb">print</span> <span class="s1">&#39;The maximum wavefront is &#39;</span><span class="p">,</span> <span class="n">rinfo</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span> <span class="s1">&#39;The semibandwidth is &#39;</span><span class="p">,</span> <span class="n">rinfo</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+<span class="nb">print</span> <span class="s1">&#39;The root-mean-square wavefront is &#39;</span><span class="p">,</span> <span class="n">rinfo</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+</pre></div>
+</td></tr></table></div>
+<div class="highlight-none"><div class="highlight"><pre><span></span>The number of supervariables is  4
+The variable permutation is  [3 5 4 1 2]
+The profile is  10.0
+The maximum wavefront is  3.0
+The semibandwidth is  3.0
+The root-mean-square wavefront is  2.09761769634
+</pre></div>
+</div>
+<div class="section" id="using-a-matrix-market-matrix-through-cysparse">
+<h4>Using a matrix market matrix through <strong class="program">CySparse</strong><a class="headerlink" href="#using-a-matrix-market-matrix-through-cysparse" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">hsl.ordering.mc60</span> <span class="k">import</span> <span class="n">sloan</span><span class="p">,</span> <span class="n">rcmk</span>
+<span class="kn">from</span> <span class="nn">cysparse.sparse.ll_mat</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">cysparse.types.cysparse_types</span> <span class="k">as</span> <span class="nn">types</span>
+
+<span class="kn">from</span> <span class="nn">hsl.tools.spy</span> <span class="k">import</span> <span class="n">fast_spy</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">LLSparseMatrix</span><span class="p">(</span><span class="n">mm_filename</span><span class="o">=</span><span class="s1">&#39;bcsstk01.mtx&#39;</span><span class="p">,</span>
+                   <span class="n">itype</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">INT32_T</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">FLOAT64_T</span><span class="p">)</span>
+<span class="n">m</span><span class="p">,</span> <span class="n">n</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span>
+<span class="n">irow</span><span class="p">,</span> <span class="n">jcol</span><span class="p">,</span> <span class="n">val</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
+
+<span class="n">A_csc</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">to_csc</span><span class="p">()</span>
+<span class="n">colptr</span><span class="p">,</span> <span class="n">rowind</span><span class="p">,</span> <span class="n">values</span> <span class="o">=</span> <span class="n">A_csc</span><span class="o">.</span><span class="n">get_numpy_arrays</span><span class="p">()</span>
+
+<span class="n">perm1</span><span class="p">,</span> <span class="n">rinfo1</span> <span class="o">=</span> <span class="n">rcmk</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rowind</span><span class="p">,</span> <span class="n">colptr</span><span class="p">)</span>   <span class="c1"># Reverse Cuthill-McKee</span>
+<span class="n">perm2</span><span class="p">,</span> <span class="n">rinfo2</span> <span class="o">=</span> <span class="n">sloan</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">rowind</span><span class="p">,</span> <span class="n">colptr</span><span class="p">)</span>  <span class="c1"># Sloan&#39;s method</span>
+
+<span class="n">left</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">131</span><span class="p">)</span>
+<span class="n">fast_spy</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">irow</span><span class="p">,</span> <span class="n">jcol</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="n">ax</span><span class="o">=</span><span class="n">left</span><span class="o">.</span><span class="n">get_axes</span><span class="p">(),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Original&#39;</span><span class="p">)</span>
+
+<span class="c1"># Apply permutation 1 and plot reordered matrix</span>
+<span class="n">middle</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">132</span><span class="p">)</span>
+<span class="n">fast_spy</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">perm1</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">perm1</span><span class="p">[</span><span class="n">jcol</span><span class="p">],</span> <span class="n">sym</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="n">ax</span><span class="o">=</span><span class="n">middle</span><span class="o">.</span><span class="n">get_axes</span><span class="p">(),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Rev. Cuthill-McKee (semibandwidth=</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">rinfo1</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="c1"># Apply permutation 2 and plot reordered matrix</span>
+<span class="n">right</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">133</span><span class="p">)</span>
+<span class="n">fast_spy</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">perm2</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">perm2</span><span class="p">[</span><span class="n">jcol</span><span class="p">],</span> <span class="n">sym</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+         <span class="n">ax</span><span class="o">=</span><span class="n">right</span><span class="o">.</span><span class="n">get_axes</span><span class="p">(),</span> <span class="n">title</span><span class="o">=</span><span class="s1">&#39;Sloan (semibandwidth=</span><span class="si">%d</span><span class="s1">)&#39;</span> <span class="o">%</span> <span class="n">rinfo2</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s1">&#39;mc60_rcmk_sloan.png&#39;</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s1">&#39;tight&#39;</span><span class="p">)</span>
+<span class="c1"># plt.show()</span>
+</pre></div>
+</td></tr></table></div>
+<div class="figure" id="id1">
+<img alt="_images/mc60_rcmk_sloan.png" src="_images/mc60_rcmk_sloan.png" />
+<p class="caption"><span class="caption-text">The sparsity pattern of the orginal matrix is shown on the left plot.
+The middle and right plots show the same matrix after a symmetric permutation of the rows and columns
+aiming to reduce the bandwidth, profile and/or wavefront. This is done respectively via the
+reverse Cuthill-McKee method and the algorithm of Sloan.</span></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="scaling.html" class="btn btn-neutral float-right" title="Scaling method for sparse matrices" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installation.html" class="btn btn-neutral" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Sylvain Arreckx, Dominique Orban and Nikolaj van Omme.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0-dev',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

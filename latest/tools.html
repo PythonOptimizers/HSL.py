@@ -1,0 +1,442 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Tools &mdash; HSL.py: Harwell Subroutine Library wrappers in Python/Cython</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/julia.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="HSL.py: Harwell Subroutine Library wrappers in Python/Cython" href="index.html"/>
+        <link rel="prev" title="Direct Solution of Symmetric Systems of Equations" href="solvers.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="contents.html" class="icon icon-home"> HSL.py
+          
+
+          
+          </a>
+          <h1>HSL.py</h1>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+              <ul>
+<li><a class="reference internal" href="#">Tools</a><ul>
+<li><a class="reference internal" href="#conversion">Conversion</a></li>
+<li><a class="reference internal" href="#matrix-readers">Matrix readers</a></li>
+<li><a class="reference internal" href="#sparsity-pattern">Sparsity pattern</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="contents.html">HSL.py</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="contents.html">Docs</a> &raquo;</li>
+        
+      <li>Tools</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/PythonOptimizers/HSL.py/blob/master/doc/source/tools.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tools">
+<h1>Tools<a class="headerlink" href="#tools" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="conversion">
+<h2>Conversion<a class="headerlink" href="#conversion" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-hsl.tools.conversion"><span id="conversion-section"></span></span><p>Conversion tools from coord format to CSC and vice versa.</p>
+<dl class="function">
+<dt id="hsl.tools.conversion.coord2csc">
+<code class="descclassname">hsl.tools.conversion.</code><code class="descname">coord2csc</code><span class="sig-paren">(</span><em>ncol</em>, <em>irow</em>, <em>jcol</em>, <em>val=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.conversion.coord2csc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sparse matrix in triple format into CSC format.</p>
+<p>To convert to compressed sparse row (csr) format, substitute
+the number of rows for ncol and swap irow and jcol.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ncol:</th><td class="field-body">Number of columns in the input matrix.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">irow:</th><td class="field-body">Integer Numpy array of length nnz containing the row indices of
+the nonzeros.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">jcol:</th><td class="field-body">Integer Numpy array of length nnz containing the column indices
+of the nonzeros.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Keywords:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">val:</th><td class="field-body">Numpy array of length nnz containing the numerical values.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">rowind:</th><td class="field-body">Integer Numpy array of length nnz containing the row indices
+of the nonzeros in each column.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">colptr:</th><td class="field-body">Integer Numpy array of length ncol+1 containing the positions
+in rowind of the start of each column.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">values:</th><td class="field-body">Numpy array of length nnz containing the numerical values.</td>
+</tr>
+</tbody>
+</table>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="hsl.tools.conversion.csc2coord">
+<code class="descclassname">hsl.tools.conversion.</code><code class="descname">csc2coord</code><span class="sig-paren">(</span><em>rowind</em>, <em>colptr</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.conversion.csc2coord" title="Permalink to this definition">¶</a></dt>
+<dd><p>Convert a sparse matrix in CSC format into triple format.</p>
+<p>To convert to compressed sparse row (csr) format, swap irow and jcol.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Arguments:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">rowind:</th><td class="field-body">Integer Numpy array of length nnz containing the row indices
+of the nonzeros in each column.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">colptr:</th><td class="field-body">Integer Numpy array of length ncol+1 containing the positions
+in rowind of the start of each column.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">irow:</th><td class="field-body">Integer Numpy array of length nnz containing the row indices of
+the nonzeros.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">jcol:</th><td class="field-body">Integer Numpy array of length nnz containing the column indices
+of the nonzeros.</td>
+</tr>
+</tbody>
+</table>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="matrix-readers">
+<h2>Matrix readers<a class="headerlink" href="#matrix-readers" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-hsl.tools.mtx"></span><p>Read a sparse matrix in Matrix Market format.</p>
+<p>See <a class="reference external" href="http://math.nist.gov/MatrixMarket">http://math.nist.gov/MatrixMarket</a> for a description of this format.</p>
+<dl class="class">
+<dt id="hsl.tools.mtx.MatrixMarketMatrix">
+<em class="property">class </em><code class="descclassname">hsl.tools.mtx.</code><code class="descname">MatrixMarketMatrix</code><span class="sig-paren">(</span><em>fname</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.mtx.MatrixMarketMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>A MatrixMarketMatrix object represents a sparse matrix read from a file.</p>
+<p>This file must describe a sparse matrix in the MatrixMarket file format.</p>
+<p>See <a class="reference external" href="http://math.nist.gov/MatrixMarket">http://math.nist.gov/MatrixMarket</a> for more information.</p>
+<p>Example: mat = MatrixMarketMatrix(&#8216;1138bus.mtx&#8217;)</p>
+<dl class="method">
+<dt id="hsl.tools.mtx.MatrixMarketMatrix.find">
+<code class="descname">find</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.mtx.MatrixMarketMatrix.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the sparse matrix in triple format (val,irow,jcol). If the
+matrix data type is <cite>None</cite>, i.e., only the matrix sparsity pattern
+is available, this method returns (irow,jcol).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="sparsity-pattern">
+<h2>Sparsity pattern<a class="headerlink" href="#sparsity-pattern" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+ 2
+ 3
+ 4
+ 5
+ 6
+ 7
+ 8
+ 9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Illustrate usage of Harwell-Boeing or Rutherford-Boeing readers and mc21.</span>
+
+<span class="sd">Supply a file name as input argument on the command line and uncomment below as</span>
+<span class="sd">appropriate.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">from</span> <span class="nn">hsl.ordering.mc21</span> <span class="k">import</span> <span class="n">nonzerodiag</span>
+<span class="kn">from</span> <span class="nn">hsl.tools.hrb</span> <span class="k">import</span> <span class="n">HarwellBoeingMatrix</span><span class="p">,</span> <span class="n">RutherfordBoeingData</span>
+
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Supply input matrix as argument</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">fname</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="c1"># M = HarwellBoeingMatrix(fname, patternOnly=True, readRhs=False)</span>
+<span class="n">M</span> <span class="o">=</span> <span class="n">RutherfordBoeingData</span><span class="p">(</span><span class="n">fname</span><span class="p">,</span> <span class="n">patternOnly</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">readRhs</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">M</span><span class="o">.</span><span class="n">nrow</span> <span class="o">!=</span> <span class="n">M</span><span class="o">.</span><span class="n">ncol</span><span class="p">:</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;Input matrix must be square</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">perm</span><span class="p">,</span> <span class="n">nzdiag</span> <span class="o">=</span> <span class="n">nonzerodiag</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">nrow</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">ind</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">ip</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s1">&#39;Number of nonzeros on diagonal after reordering: &#39;</span><span class="p">,</span> <span class="n">nzdiag</span>
+
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">hsl.tools.spy</span> <span class="k">import</span> <span class="n">fast_spy</span>
+    <span class="kn">import</span> <span class="nn">pylab</span>
+    <span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">irow</span><span class="p">,</span> <span class="n">jcol</span><span class="p">)</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">find</span><span class="p">()</span>
+    <span class="n">left</span> <span class="o">=</span> <span class="n">pylab</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">121</span><span class="p">)</span>
+    <span class="n">fast_spy</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">nrow</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span> <span class="n">irow</span><span class="p">,</span> <span class="n">jcol</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">issym</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">left</span><span class="o">.</span><span class="n">get_axes</span><span class="p">())</span>
+
+    <span class="n">right</span> <span class="o">=</span> <span class="n">pylab</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">122</span><span class="p">)</span>
+    <span class="n">fast_spy</span><span class="p">(</span><span class="n">M</span><span class="o">.</span><span class="n">nrow</span><span class="p">,</span> <span class="n">M</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span> <span class="n">perm</span><span class="p">[</span><span class="n">irow</span><span class="p">],</span> <span class="n">jcol</span><span class="p">,</span> <span class="n">sym</span><span class="o">=</span><span class="n">M</span><span class="o">.</span><span class="n">issym</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">right</span><span class="o">.</span><span class="n">get_axes</span><span class="p">())</span>
+    <span class="n">pylab</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+    <span class="c1"># pylab.savefig(&#39;mc21.pdf&#39;, bbox_inches=&#39;tight&#39;)</span>
+
+<span class="k">except</span><span class="p">:</span>
+    <span class="k">pass</span>
+</pre></div>
+</td></tr></table></div>
+<div class="figure">
+<img alt="_images/mc21.png" src="_images/mc21.png" />
+</div>
+<p>The sparsity pattern of the orginal matrix is shown on the left plot.
+The right plot show sthe same matrix after usage of the <cite>nonzerodiag</cite> function which
+attempts to find a row permutation so the row-permuted matrix has a nonzero diagonal, if this is possible.</p>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="solvers.html" class="btn btn-neutral" title="Direct Solution of Symmetric Systems of Equations" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Sylvain Arreckx, Dominique Orban and Nikolaj van Omme.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0-dev',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

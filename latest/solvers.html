@@ -1,0 +1,504 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Direct Solution of Symmetric Systems of Equations &mdash; HSL.py: Harwell Subroutine Library wrappers in Python/Cython</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700|Roboto+Slab:400,700|Inconsolata:400,700' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/julia.css" type="text/css" />
+  
+
+  
+
+  
+        <link rel="index" title="Index"
+              href="genindex.html"/>
+        <link rel="search" title="Search" href="search.html"/>
+    <link rel="top" title="HSL.py: Harwell Subroutine Library wrappers in Python/Cython" href="index.html"/>
+        <link rel="next" title="Tools" href="tools.html"/>
+        <link rel="prev" title="Scaling method for sparse matrices" href="scaling.html"/> 
+
+  
+  <script src="_static/js/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+   
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="contents.html" class="icon icon-home"> HSL.py
+          
+
+          
+          </a>
+          <h1>HSL.py</h1>
+
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+              <ul>
+<li><a class="reference internal" href="#">Direct Solution of Symmetric Systems of Equations</a><ul>
+<li><a class="reference internal" href="#module-hsl.solvers.pyma27">The <code class="docutils literal"><span class="pre">pyma27</span></code> Module</a></li>
+<li><a class="reference internal" href="#the-pyma57-module">The <code class="docutils literal"><span class="pre">pyma57</span></code> Module</a></li>
+<li><a class="reference internal" href="#example">Example</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="contents.html">HSL.py</a>
+        
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="contents.html">Docs</a> &raquo;</li>
+        
+      <li>Direct Solution of Symmetric Systems of Equations</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            
+              <a href="https://github.com/PythonOptimizers/HSL.py/blob/master/doc/source/solvers.rst" class="fa fa-github"> Edit on GitHub</a>
+            
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="direct-solution-of-symmetric-systems-of-equations">
+<span id="solvers-page"></span><h1>Direct Solution of Symmetric Systems of Equations<a class="headerlink" href="#direct-solution-of-symmetric-systems-of-equations" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-hsl.solvers.pyma27">
+<span id="the-pyma27-module"></span><h2>The <code class="xref py py-mod docutils literal"><span class="pre">pyma27</span></code> Module<a class="headerlink" href="#module-hsl.solvers.pyma27" title="Permalink to this headline">¶</a></h2>
+<p>Ma27: Direct multifrontal solution of symmetric systems.</p>
+<dl class="class">
+<dt id="hsl.solvers.pyma27.PyMa27Solver">
+<em class="property">class </em><code class="descclassname">hsl.solvers.pyma27.</code><code class="descname">PyMa27Solver</code><span class="sig-paren">(</span><em>A</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.solvers.pyma27.PyMa27Solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">hsl.solvers.sils.Sils</span></code></p>
+<dl class="method">
+<dt id="hsl.solvers.pyma27.PyMa27Solver.fetch_perm">
+<code class="descname">fetch_perm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hsl.solvers.pyma27.PyMa27Solver.fetch_perm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the permutation vector p.</p>
+<p>The permutation vector is used to compute the factorization of A.
+Rows and columns were permuted so that</p>
+<blockquote>
+<div>Pᵀ A P = L B Lᵀ</div></blockquote>
+<p>where i-th row of P is the p(i)-th row of the identity matrix, L is
+unit upper triangular and B is block diagonal with 1x1 and 2x2 blocks.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hsl.solvers.pyma27.PyMa27Solver.inertia">
+<code class="descname">inertia</code><a class="headerlink" href="#hsl.solvers.pyma27.PyMa27Solver.inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return inertia of matrix A.</p>
+<p>Inertia of a matrix is given by (# of λ&gt;0, # of λ&lt;0, # λ=0).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hsl.solvers.pyma27.PyMa27Solver.refine">
+<code class="descname">refine</code><span class="sig-paren">(</span><em>b</em>, <em>nitref=3</em>, <em>tol=1e-08</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.solvers.pyma27.PyMa27Solver.refine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform iterative refinement if necessary.</p>
+<p>Iterative refinement is performed  until the scaled residual norm
+‖b-Ax‖/(1+‖b‖) falls below the threshold &#8216;tol&#8217; or until nitref steps
+are taken.
+Make sure you have called <cite>solve()</cite> with the same right-hand side b
+before calling <cite>refine()</cite>.
+The residual vector <cite>self.residual</cite> will be updated to reflect the
+updated approximate solution.</p>
+<p>By default, tol = 1.0e-8 and nitref = 3.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hsl.solvers.pyma27.PyMa27Solver.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>b</em>, <em>get_resid=True</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.solvers.pyma27.PyMa27Solver.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve the linear system of equations Ax = b.</p>
+<p>The solution will be found in self.x and residual in
+self.residual.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="the-pyma57-module">
+<h2>The <code class="xref py py-mod docutils literal"><span class="pre">pyma57</span></code> Module<a class="headerlink" href="#the-pyma57-module" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="example">
+<h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;Exemple from MA57 spec sheet: http://www.hsl.rl.ac.uk/specs/ma57.pdf.&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">hsl.solvers.src._cyma57_numpy_INT32_FLOAT64</span> <span class="k">import</span> <span class="n">NumpyMA57Solver_INT32_FLOAT64</span>
+
+<span class="n">n</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">nnz</span> <span class="o">=</span> <span class="mi">7</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span>
+              <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+<span class="n">arow</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="n">acol</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">int32</span><span class="p">)</span>
+<span class="n">aval</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">2.0</span><span class="p">,</span> <span class="mf">3.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">,</span> <span class="mf">6.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">5.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+<span class="n">rhs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">8</span><span class="p">,</span> <span class="mi">45</span><span class="p">,</span> <span class="mi">31</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">17</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float64</span><span class="p">)</span>
+
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">NumpyMA57Solver_INT32_FLOAT64</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
+<span class="n">context</span><span class="o">.</span><span class="n">get_matrix_data</span><span class="p">(</span><span class="n">arow</span><span class="p">,</span> <span class="n">acol</span><span class="p">,</span> <span class="n">aval</span><span class="p">)</span>
+
+<span class="n">context</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
+
+<span class="n">context</span><span class="o">.</span><span class="n">factorize</span><span class="p">()</span>
+
+<span class="nb">print</span> <span class="s1">&#39;Solve:&#39;</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">residual</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="c1"># x = context.solve(rhs, False)</span>
+<span class="nb">print</span> <span class="s1">&#39;  x:&#39;</span>
+<span class="nb">print</span> <span class="n">x</span>
+<span class="nb">print</span> <span class="s1">&#39;  residual:&#39;</span>
+<span class="nb">print</span> <span class="n">residual</span>
+
+<span class="nb">print</span> <span class="s1">&#39;Fetch_perm:&#39;</span>
+<span class="n">perm</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">fetch_perm</span><span class="p">()</span>
+<span class="nb">print</span> <span class="s1">&#39;  perm:&#39;</span>
+<span class="nb">print</span> <span class="n">perm</span>
+
+<span class="nb">print</span> <span class="s1">&#39;Refine:&#39;</span>
+<span class="p">(</span><span class="n">new_x</span><span class="p">,</span> <span class="n">new_res</span><span class="p">)</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">refine</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="n">residual</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s1">&#39;  new_x: &#39;</span>
+<span class="nb">print</span> <span class="n">new_x</span>
+<span class="nb">print</span> <span class="s1">&#39;  new_res: &#39;</span>
+<span class="nb">print</span> <span class="n">new_res</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">cysparse.sparse.ll_mat</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">import</span> <span class="nn">cysparse.types.cysparse_types</span> <span class="k">as</span> <span class="nn">types</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">hsl.solvers.src._cyma57_cysparse_INT32_FLOAT64</span> <span class="k">import</span> <span class="n">CySparseMA57Solver_INT32_FLOAT64</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">LLSparseMatrix</span><span class="p">(</span><span class="n">mm_filename</span><span class="o">=</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">itype</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">INT32_T</span><span class="p">,</span>
+                   <span class="n">dtype</span><span class="o">=</span><span class="n">types</span><span class="o">.</span><span class="n">FLOAT64_T</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">shape</span>
+<span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">)</span>
+<span class="c1"># rhs = np.zeros(n, &#39;d&#39;)</span>
+<span class="n">rhs</span> <span class="o">=</span> <span class="n">A</span> <span class="o">*</span> <span class="n">e</span>
+
+<span class="n">context</span> <span class="o">=</span> <span class="n">CySparseMA57Solver_INT32_FLOAT64</span><span class="p">(</span><span class="n">A</span><span class="o">.</span><span class="n">nrow</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">ncol</span><span class="p">,</span> <span class="n">A</span><span class="o">.</span><span class="n">nnz</span><span class="p">)</span>
+<span class="n">context</span><span class="o">.</span><span class="n">get_matrix_data</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+
+<span class="n">context</span><span class="o">.</span><span class="n">analyze</span><span class="p">()</span>
+
+<span class="n">context</span><span class="o">.</span><span class="n">factorize</span><span class="p">()</span>
+
+<span class="nb">print</span> <span class="s1">&#39;Fetch_perm:&#39;</span>
+<span class="n">perm</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">fetch_perm</span><span class="p">()</span>
+<span class="nb">print</span> <span class="s1">&#39;  perm:&#39;</span>
+<span class="nb">print</span> <span class="n">perm</span>
+
+
+<span class="nb">print</span> <span class="s1">&#39;Solve:&#39;</span>
+<span class="n">x</span><span class="p">,</span> <span class="n">residual</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s1">&#39;  x:&#39;</span>
+<span class="nb">print</span> <span class="n">x</span>
+<span class="nb">print</span> <span class="s1">&#39;  residual:&#39;</span>
+<span class="nb">print</span> <span class="n">residual</span>
+
+<span class="nb">print</span> <span class="s1">&#39;Refine:&#39;</span>
+<span class="p">(</span><span class="n">new_x</span><span class="p">,</span> <span class="n">new_res</span><span class="p">)</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">refine</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="n">residual</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="nb">print</span> <span class="s1">&#39;  cond: &#39;</span><span class="p">,</span> <span class="n">context</span><span class="o">.</span><span class="n">cond</span>
+<span class="nb">print</span> <span class="s1">&#39;  new_x: &#39;</span>
+<span class="nb">print</span> <span class="n">new_x</span>
+<span class="nb">print</span> <span class="s1">&#39;  new_res: &#39;</span>
+<span class="nb">print</span> <span class="n">new_res</span>
+</pre></div>
+</div>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Demonstrate usage of PyMa27 abstract class for the solution of symmetric</span>
+<span class="c1"># systems of linear equations.</span>
+<span class="c1"># Example usage: python demo_ma27.py file1.mtx ... fileN.mtx</span>
+<span class="c1"># where each fileK.mtx is in MatrixMarket format.</span>
+
+<span class="c1"># from hsl.solvers.pyma27 import PyMa27Solver as LBLContext</span>
+<span class="kn">from</span> <span class="nn">hsl.solvers.pyma57</span> <span class="k">import</span> <span class="n">PyMa57Solver</span> <span class="k">as</span> <span class="n">LBLContext</span>
+<span class="kn">from</span> <span class="nn">pysparse</span> <span class="k">import</span> <span class="n">spmatrix</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg</span> <span class="k">import</span> <span class="n">norm</span>
+<span class="kn">import</span> <span class="nn">timeit</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+
+<span class="k">def</span> <span class="nf">Hilbert</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The cream of ill conditioning: the Hilbert matrix.</span>
+
+<span class="sd">    See Higham, &quot;Accuracy and Stability of Numerical Algoriths&quot;, section 28.1.</span>
+<span class="sd">    The matrix has elements H(i,j) = 1/(i+j-1) when indexed i,j=1..n.  However,</span>
+<span class="sd">    here we index as i,j=0..n-1, so the elements are H(i,j) = 1/(i+j+1).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">&lt;=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">None</span>
+    <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mf">1.0</span>
+    <span class="n">nnz</span> <span class="o">=</span> <span class="n">n</span> <span class="o">*</span> <span class="p">(</span><span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">)</span> <span class="o">/</span> <span class="mi">2</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">spmatrix</span><span class="o">.</span><span class="n">ll_mat_sym</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="n">nnz</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n</span><span class="p">):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">):</span>
+            <span class="n">H</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">H</span>
+
+
+<span class="k">def</span> <span class="nf">Ma27SpecSheet</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;This is the example from the MA27 spec sheet.</span>
+
+<span class="sd">    Solution should be [1,2,3,4,5]&quot;&quot;&quot;</span>
+    <span class="n">A</span> <span class="o">=</span> <span class="n">spmatrix</span><span class="o">.</span><span class="n">ll_mat_sym</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">)</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">3</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">4</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">5</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">6</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+
+    <span class="n">rhs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">)</span>
+    <span class="n">rhs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">8</span>
+    <span class="n">rhs</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">45</span>
+    <span class="n">rhs</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mi">31</span>
+    <span class="n">rhs</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="mi">15</span>
+    <span class="n">rhs</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span> <span class="o">=</span> <span class="mi">17</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">solve_system</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">rhs</span><span class="p">,</span> <span class="n">itref_threshold</span><span class="o">=</span><span class="mf">1.0e-6</span><span class="p">,</span> <span class="n">nitrefmax</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span>
+
+    <span class="c1"># Obtain Sils context object</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+    <span class="n">LBL</span> <span class="o">=</span> <span class="n">LBLContext</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+    <span class="n">t_analyze</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span>
+
+    <span class="c1"># Solve system and compute residual</span>
+    <span class="n">t</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span>
+    <span class="n">LBL</span><span class="o">.</span><span class="n">solve</span><span class="p">(</span><span class="n">rhs</span><span class="p">)</span>
+    <span class="n">t_solve</span> <span class="o">=</span> <span class="n">timeit</span><span class="o">.</span><span class="n">default_timer</span><span class="p">()</span> <span class="o">-</span> <span class="n">t</span>
+
+    <span class="c1"># Compute residual norm</span>
+    <span class="n">nrhsp1</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">infty</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">nr</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">LBL</span><span class="o">.</span><span class="n">residual</span><span class="p">)</span> <span class="o">/</span> <span class="n">nrhsp1</span>
+
+    <span class="c1"># If residual not small, perform iterative refinement</span>
+    <span class="n">LBL</span><span class="o">.</span><span class="n">refine</span><span class="p">(</span><span class="n">rhs</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="n">itref_threshold</span><span class="p">,</span> <span class="n">nitref</span><span class="o">=</span><span class="n">nitrefmax</span><span class="p">)</span>
+    <span class="n">nr1</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">LBL</span><span class="o">.</span><span class="n">residual</span><span class="p">,</span> <span class="nb">ord</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">infty</span><span class="p">)</span> <span class="o">/</span> <span class="n">nrhsp1</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">LBL</span><span class="o">.</span><span class="n">x</span><span class="p">,</span> <span class="n">LBL</span><span class="o">.</span><span class="n">residual</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">nr1</span><span class="p">,</span> <span class="n">t_analyze</span><span class="p">,</span> <span class="n">t_solve</span><span class="p">,</span> <span class="n">LBL</span><span class="o">.</span><span class="n">neig</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">&#39;__main__&#39;</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">sys</span>
+    <span class="kn">import</span> <span class="nn">os</span>
+    <span class="n">matrices</span> <span class="o">=</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:]</span>
+
+    <span class="n">hdr_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%-13s</span><span class="s1">  </span><span class="si">%-11s</span><span class="s1">  </span><span class="si">%-11s</span><span class="s1">  </span><span class="si">%-11s</span><span class="s1">  </span><span class="si">%-7s</span><span class="s1">  </span><span class="si">%-7s</span><span class="s1">  </span><span class="si">%-5s</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">res_fmt</span> <span class="o">=</span> <span class="s1">&#39;</span><span class="si">%-13s</span><span class="s1">  </span><span class="si">%-11.5e</span><span class="s1">  </span><span class="si">%-11.5e</span><span class="s1">  </span><span class="si">%-11.5e</span><span class="s1">  </span><span class="si">%-7.3f</span><span class="s1">  </span><span class="si">%-7.3f</span><span class="s1">  </span><span class="si">%-5d</span><span class="se">\n</span><span class="s1">&#39;</span>
+    <span class="n">hdrs</span> <span class="o">=</span> <span class="p">(</span><span class="s1">&#39;Name&#39;</span><span class="p">,</span> <span class="s1">&#39;Rel. resid.&#39;</span><span class="p">,</span> <span class="s1">&#39;Residual&#39;</span><span class="p">,</span> <span class="s1">&#39;Resid itref&#39;</span><span class="p">,</span> <span class="s1">&#39;Analyze&#39;</span><span class="p">,</span>
+            <span class="s1">&#39;Solve&#39;</span><span class="p">,</span> <span class="s1">&#39;neig&#39;</span><span class="p">)</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="n">hdr_fmt</span> <span class="o">%</span> <span class="n">hdrs</span>
+    <span class="n">lhead</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">lhead</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">header</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">lhead</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># Solve example from the spec sheet</span>
+    <span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span> <span class="o">=</span> <span class="n">Ma27SpecSheet</span><span class="p">()</span>
+    <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">nr1</span><span class="p">,</span> <span class="n">t_an</span><span class="p">,</span> <span class="n">t_sl</span><span class="p">,</span> <span class="n">neig</span><span class="p">)</span> <span class="o">=</span> <span class="n">solve_system</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span>
+    <span class="n">exact</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="s1">&#39;d&#39;</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span>
+    <span class="n">relres</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">exact</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">exact</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">res_fmt</span> <span class="o">%</span>
+                     <span class="p">(</span><span class="s1">&#39;Spec sheet&#39;</span><span class="p">,</span> <span class="n">relres</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">nr1</span><span class="p">,</span> <span class="n">t_an</span><span class="p">,</span> <span class="n">t_sl</span><span class="p">,</span> <span class="n">neig</span><span class="p">))</span>
+
+    <span class="c1"># Solve example with Hilbert matrix</span>
+    <span class="n">n</span> <span class="o">=</span> <span class="mi">10</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="n">Hilbert</span><span class="p">(</span><span class="n">n</span><span class="p">)</span>
+    <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">)</span>
+    <span class="n">rhs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">)</span>
+    <span class="n">H</span><span class="o">.</span><span class="n">matvec</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span>
+    <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">nr1</span><span class="p">,</span> <span class="n">t_an</span><span class="p">,</span> <span class="n">t_sl</span><span class="p">,</span> <span class="n">neig</span><span class="p">)</span> <span class="o">=</span> <span class="n">solve_system</span><span class="p">(</span><span class="n">H</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span>
+    <span class="n">relres</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">res_fmt</span> <span class="o">%</span> <span class="p">(</span><span class="s1">&#39;Hilbert&#39;</span><span class="p">,</span> <span class="n">relres</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">nr1</span><span class="p">,</span> <span class="n">t_an</span><span class="p">,</span> <span class="n">t_sl</span><span class="p">,</span> <span class="n">neig</span><span class="p">))</span>
+
+    <span class="c1"># Process matrices given on the command line</span>
+    <span class="k">for</span> <span class="n">matrix</span> <span class="ow">in</span> <span class="n">matrices</span><span class="p">:</span>
+        <span class="n">M</span> <span class="o">=</span> <span class="n">spmatrix</span><span class="o">.</span><span class="n">ll_mat_from_mtx</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">m</span><span class="p">,</span> <span class="n">n</span><span class="p">)</span> <span class="o">=</span> <span class="n">M</span><span class="o">.</span><span class="n">shape</span>
+        <span class="k">if</span> <span class="n">m</span> <span class="o">!=</span> <span class="n">n</span><span class="p">:</span>
+            <span class="k">break</span>
+        <span class="n">e</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">)</span>
+        <span class="n">rhs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="n">n</span><span class="p">,</span> <span class="s1">&#39;d&#39;</span><span class="p">)</span>
+        <span class="n">M</span><span class="o">.</span><span class="n">matvec</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span>
+        <span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">r</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">nr1</span><span class="p">,</span> <span class="n">t_an</span><span class="p">,</span> <span class="n">t_sl</span><span class="p">,</span> <span class="n">neig</span><span class="p">)</span> <span class="o">=</span> <span class="n">solve_system</span><span class="p">(</span><span class="n">M</span><span class="p">,</span> <span class="n">rhs</span><span class="p">)</span>
+        <span class="n">relres</span> <span class="o">=</span> <span class="n">norm</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="n">e</span><span class="p">)</span> <span class="o">/</span> <span class="n">norm</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">probname</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">matrix</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">probname</span><span class="p">[</span><span class="o">-</span><span class="mi">4</span><span class="p">:]</span> <span class="o">==</span> <span class="s1">&#39;.mtx&#39;</span><span class="p">:</span>
+            <span class="n">probname</span> <span class="o">=</span> <span class="n">probname</span><span class="p">[:</span><span class="o">-</span><span class="mi">4</span><span class="p">]</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">stdout</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">res_fmt</span> <span class="o">%</span>
+                         <span class="p">(</span><span class="n">probname</span><span class="p">,</span> <span class="n">relres</span><span class="p">,</span> <span class="n">nr</span><span class="p">,</span> <span class="n">nr1</span><span class="p">,</span> <span class="n">t_an</span><span class="p">,</span> <span class="n">t_sl</span><span class="p">,</span> <span class="n">neig</span><span class="p">))</span>
+    <span class="n">sys</span><span class="o">.</span><span class="n">stderr</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;-&#39;</span> <span class="o">*</span> <span class="n">lhead</span> <span class="o">+</span> <span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           <div class="articleComments">
+            
+           </div>
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tools.html" class="btn btn-neutral float-right" title="Tools" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="scaling.html" class="btn btn-neutral" title="Scaling method for sparse matrices" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2015, Sylvain Arreckx, Dominique Orban and Nikolaj van Omme.
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.1.0-dev',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true,
+            SOURCELINK_SUFFIX: '.txt'
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
