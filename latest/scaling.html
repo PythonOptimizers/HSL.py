@@ -152,6 +152,87 @@
 <span id="scaling-page"></span><h1>Scaling method for sparse matrices<a class="headerlink" href="#scaling-method-for-sparse-matrices" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="the-mc29-module">
 <h2>The <code class="xref py py-mod docutils literal"><span class="pre">mc29</span></code> Module<a class="headerlink" href="#the-mc29-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-hsl.scaling.mc29"><span id="mc29-section"></span></span><dl class="function">
+<dt id="hsl.scaling.mc29.MC29AD_scale">
+<code class="descclassname">hsl.scaling.mc29.</code><code class="descname">MC29AD_scale</code><span class="sig-paren">(</span><em>m</em>, <em>n</em>, <em>a_row</em>, <em>a_col</em>, <em>a_val</em>, <em>b=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.scaling.mc29.MC29AD_scale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use MC29AD for scaling values of A (in place).</p>
+<p>Matrix A to scale must be provided in coordinate format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">m:</th><td class="field-body">number of rows of A</td>
+</tr>
+<tr class="field-even field"><th class="field-name">n:</th><td class="field-body">number of columns of A</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">a_row:</th><td class="field-body">row indices of non zero elements of A</td>
+</tr>
+<tr class="field-even field"><th class="field-name">a_col:</th><td class="field-body">column indices of non zero elements of A</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">a_val:</th><td class="field-body">values of non zeros elements of A (in/out)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">b:</th><td class="field-body">right-hand side (optional)</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><ul class="simple">
+<li>row_scale: row scaling factors</li>
+<li>col_scale: column scaling factors</li>
+</ul>
+</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">(tuple)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="hsl.scaling.mc29.unscale">
+<code class="descclassname">hsl.scaling.mc29.</code><code class="descname">unscale</code><span class="sig-paren">(</span><em>m</em>, <em>n</em>, <em>row_scale</em>, <em>col_scale</em>, <em>a_row</em>, <em>a_col</em>, <em>a_val</em>, <em>b=None</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.scaling.mc29.unscale" title="Permalink to this definition">¶</a></dt>
+<dd><p>Unscale values of A and possibly right-hand side.</p>
+<p>Unscaling is performed using user-provided row and column scaling factors.</p>
+<p>Matrix A to scale must be provided in coordinate format</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">m:</th><td class="field-body">number of rows of A</td>
+</tr>
+<tr class="field-even field"><th class="field-name">n:</th><td class="field-body">number of columns of A</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">row_scale:</th><td class="field-body">row scaling factors</td>
+</tr>
+<tr class="field-even field"><th class="field-name">col_scale:</th><td class="field-body">column scaling factors</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">a_row:</th><td class="field-body">row indices of non zero elements of A</td>
+</tr>
+<tr class="field-even field"><th class="field-name">a_col:</th><td class="field-body">column indices of non zero elements of A</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">a_val:</th><td class="field-body">values of non zeros elements of A (in/out)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">b:</th><td class="field-body">right-hand side (optional)</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>

@@ -81,7 +81,7 @@
               <ul>
 <li><a class="reference internal" href="#">Ordering method for sparse matrices</a><ul>
 <li><a class="reference internal" href="#the-mc21-module">The <code class="docutils literal"><span class="pre">mc21</span></code> Module</a></li>
-<li><a class="reference internal" href="#the-mc60-module">The <code class="docutils literal"><span class="pre">mc60</span></code> Module</a><ul>
+<li><a class="reference internal" href="#module-hsl.ordering.mc60">The <code class="docutils literal"><span class="pre">mc60</span></code> Module</a><ul>
 <li><a class="reference internal" href="#sloan-s-algorithm">Sloan&#8217;s algorithm</a></li>
 <li><a class="reference internal" href="#reverse-cuthill-mckee-algorithm">Reverse Cuthill-McKee algorithm</a></li>
 <li><a class="reference internal" href="#example">Example</a><ul>
@@ -160,14 +160,270 @@
 <span id="ordering-page"></span><h1>Ordering method for sparse matrices<a class="headerlink" href="#ordering-method-for-sparse-matrices" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="the-mc21-module">
 <h2>The <code class="xref py py-mod docutils literal"><span class="pre">mc21</span></code> Module<a class="headerlink" href="#the-mc21-module" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-hsl.ordering.mc21"><span id="mc21-section"></span></span><p>A Python interface to the HSL subroutine MC21AD.</p>
+<p><strong>References</strong></p>
+<table class="docutils citation" frame="void" id="duff81a" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id1">[Duff81a]</a></td><td>I. S. Duff, <em>On Algorithms for Obtaining a Maximum Transversal</em>,
+ACM Trans. Math. Software, <strong>7</strong>, pp. 315-330, 1981.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="duff81b" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id2">[Duff81b]</a></td><td>I. S. Duff, <em>Algorithm 575: Permutations for a zero-free
+diagonal</em>, ACM Trans. Math. Software, <strong>7</strong>, pp. 387-390, 1981.</td></tr>
+</tbody>
+</table>
+<dl class="function">
+<dt id="hsl.ordering.mc21.nonzerodiag">
+<code class="descclassname">hsl.ordering.mc21.</code><code class="descname">nonzerodiag</code><span class="sig-paren">(</span><em>nrow</em>, <em>colind</em>, <em>rowptr</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.ordering.mc21.nonzerodiag" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given the sparsity pattern of a square sparse matrix in compressed row
+(csr) format, attempt to find a <em>row</em> permutation so the row-permuted
+matrix has a nonzero diagonal, if this is possible. This function assumes
+that the matrix indexing is 0-based. Note that in general, this function
+does not preserve symmetry. The method used is a depth-first search with
+lookahead described in <a class="reference internal" href="#duff81a" id="id1">[Duff81a]</a> and <a class="reference internal" href="#duff81b" id="id2">[Duff81b]</a>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">nrow:</th><td class="field-body">The number of rows of the input matrix.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">colind:</th><td class="field-body">An integer array (or list) of length nnz giving the column
+indices of the nonzero elements in each row.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">rowptr:</th><td class="field-body">An integer array (or list) of length nrow+1 giving the
+indices of the first element of each row in colind.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">perm:</th><td class="field-body">An integer array of length nrow giving the variable permutation.
+If irow and jcol are two integer arrays describing the pattern of
+the input matrix in triple format, perm[irow] and jcol
+describe the permuted matrix.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">nzdiag:</th><td class="field-body">The number of nonzeros on the diagonal of the permuted matrix.</td>
+</tr>
+</tbody>
+</table>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
-<div class="section" id="the-mc60-module">
-<h2>The <code class="xref py py-mod docutils literal"><span class="pre">mc60</span></code> Module<a class="headerlink" href="#the-mc60-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-hsl.ordering.mc60">
+<span id="the-mc60-module"></span><h2>The <code class="xref py py-mod docutils literal"><span class="pre">mc60</span></code> Module<a class="headerlink" href="#module-hsl.ordering.mc60" title="Permalink to this headline">¶</a></h2>
+<p>A Python interface to the HSL subroutine MC60AD.</p>
+<p>The functions in this module compute a symmetric permutation of a sparse
+symmetric matrix so as to reduce its profile, wavefront, or bandwidth via
+Sloan&#8217;s method <a class="reference internal" href="#slo" id="id3">[SLO]</a> or the reverse Cuthill-McKee method <a class="reference internal" href="#cm" id="id4">[CM]</a>.</p>
+<p>References</p>
+<table class="docutils citation" frame="void" id="cm" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id4">[CM]</a></td><td>E. Cuthill and J. McKee, <em>Reducing the bandwidth of sparse symmetric
+matrices</em> In Proc. 24th Nat. Conf. ACM, pages 157-172, 1969.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="rs" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[RS]</td><td>J. K. Reid and J. A. Scott, <em>Ordering symmetric sparse matrices for
+small profile and wavefront</em>, International Journal for Numerical
+Methods in Engineering, <strong>45</strong>(12), pp. 1737&#8211;1755, 1999.</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="slo" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label"><a class="fn-backref" href="#id3">[SLO]</a></td><td>S. W. Sloan, <em>An algorithm for profile and wavefront reduction of
+sparse matrices</em>, International Journal of Numerical Methods in
+Engineering, <strong>23</strong>, pp. 239&#8211;251, 1986.</td></tr>
+</tbody>
+</table>
 <div class="section" id="sloan-s-algorithm">
 <h3>Sloan&#8217;s algorithm<a class="headerlink" href="#sloan-s-algorithm" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="hsl.ordering.mc60.sloan">
+<code class="descclassname">hsl.ordering.mc60.</code><code class="descname">sloan</code><span class="sig-paren">(</span><em>n, rowind, colptr, icntl=[0, 6], weight=[2, 1]</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.ordering.mc60.sloan" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply Sloan&#8217;s algorithm.</p>
+<p>Sloan&#8217;s algorithm is used to reduce the profile and wavefront of a sparse
+symmetric matrix. Either the lower or the upper triangle of the input
+matrix should be given in compressed sparse column (csc) or compressed
+sparse row (csr) format. This includes the diagonal of the matrix. A set of
+weights can be supplied to define the priority function in Sloan&#8217;s method.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">n:</th><td class="field-body">The order of the input matrix.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rowind:</th><td class="field-body">An integer array (or list) of length nnz giving the row
+indices of the nonzero elements in each column.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">colptr:</th><td class="field-body">An integer array (or list) of length n+1 giving the indices of
+the first element of each column in rowind.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note that since either triangle can be given in either csc or csr format,
+the words &#8216;row&#8217; and &#8216;column&#8217; may be swapped in the description above.
+The indexing in rowind and colptr should be zero-based.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">icntl:</th><td class="field-body">An integer array (or list) of length two of control parameters
+used during the first phase, where the input data is checked.
+The method terminates if duplicates of out-of-range indices are
+discovered (icntl[0]=0) or ignores them (icntl[0]=1). No
+diagnostic messages will be output if icntl[1]=0. If icntl[1]
+is &gt; 0, it gives the unit number (in the Fortran sense) where
+diagonostic messages are output.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">weight:</th><td class="field-body">An integer array (or list) of length two giving the weights
+in Sloan&#8217;s priority function. Reid and Scott (1999) recommend
+to apply the method twice, with either [2,1] and [16,1], or
+with [1,2] and [16,1], and to retain the best result.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">perm:</th><td class="field-body">An integer array of length n giving the variable permutation. If
+irow and jcol are two integer arrays describing the pattern of
+the input matrix in triple format, perm[irow] and perm[jrow]
+describe the permuted matrix.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rinfo:</th><td class="field-body">A real array of length 4 giving statistics on the permuted
+matrix.
+rinfo[0] = profile
+rinfo[1] = maximum wavefront
+rinfo[2] = semi-bandwidth
+rinfo[3] = root-mean-square wavefront.</td>
+</tr>
+</tbody>
+</table>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="reverse-cuthill-mckee-algorithm">
 <h3>Reverse Cuthill-McKee algorithm<a class="headerlink" href="#reverse-cuthill-mckee-algorithm" title="Permalink to this headline">¶</a></h3>
+<dl class="function">
+<dt id="hsl.ordering.mc60.rcmk">
+<code class="descclassname">hsl.ordering.mc60.</code><code class="descname">rcmk</code><span class="sig-paren">(</span><em>n, rowind, colptr, icntl=[0, 6]</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.ordering.mc60.rcmk" title="Permalink to this definition">¶</a></dt>
+<dd><p>Apply the reverse Cuthill-McKee algorithm.</p>
+<p>The reverse Cuthill-McKee algorithm is used to reduce the bandwidth of
+a sparse symmetric matrix. Either the lower or the upper triangle of the
+input matrix should be given in compressed sparse column (csc) or
+compressed sparse row (csr) format. This includes the diagonal of the
+matrix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">n:</th><td class="field-body">The order of the input matrix.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rowind:</th><td class="field-body">An integer array (or list) of length nnz giving the row
+indices of the nonzero elements in each column.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">colptr:</th><td class="field-body">An integer array (or list) of length n+1 giving the indices of
+the first element of each column in rowind.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<p>Note that since either triangle can be given in either csc or csr format,
+the words &#8216;row&#8217; and &#8216;column&#8217; may be swapped in the description above.
+The indexing in rowind and colptr should be zero-based.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">icntl:</th><td class="field-body">An integer array (or list) of length two of control parameters
+used during the first phase, where the input data is checked.
+The method terminates if duplicates of out-of-range indices are
+discovered (icntl[0]=0) or ignores them (icntl[0]=1). No
+diagnostic messages will be output if icntl[1]=0. If icntl[1]
+is &gt; 0, it gives the unit number (in the Fortran sense) where
+diagonostic messages are output.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">perm:</th><td class="field-body">An integer array of length n giving the variable permutation. If
+irow and jcol are two integer arrays describing the pattern of
+the input matrix in triple format, perm[irow] and perm[jcol]
+describe the permuted matrix.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">rinfo:</th><td class="field-body">A real array of length 4 giving statistics on the permuted
+matrix.
+rinfo[0] = profile
+rinfo[1] = maximum wavefront
+rinfo[2] = semi-bandwidth
+rinfo[3] = root-mean-square wavefront.</td>
+</tr>
+</tbody>
+</table>
+</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="example">
 <h3>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h3>
@@ -329,7 +585,7 @@ The root-mean-square wavefront is  2.09761769634
 <span class="c1"># plt.show()</span>
 </pre></div>
 </td></tr></table></div>
-<div class="figure" id="id1">
+<div class="figure" id="id5">
 <img alt="_images/mc60_rcmk_sloan.png" src="_images/mc60_rcmk_sloan.png" />
 <p class="caption"><span class="caption-text">The sparsity pattern of the orginal matrix is shown on the left plot.
 The middle and right plots show the same matrix after a symmetric permutation of the rows and columns

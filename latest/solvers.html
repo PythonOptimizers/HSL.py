@@ -81,7 +81,7 @@
               <ul>
 <li><a class="reference internal" href="#">Direct Solution of Symmetric Systems of Equations</a><ul>
 <li><a class="reference internal" href="#module-hsl.solvers.pyma27">The <code class="docutils literal"><span class="pre">pyma27</span></code> Module</a></li>
-<li><a class="reference internal" href="#the-pyma57-module">The <code class="docutils literal"><span class="pre">pyma57</span></code> Module</a></li>
+<li><a class="reference internal" href="#module-hsl.solvers.pyma57">The <code class="docutils literal"><span class="pre">pyma57</span></code> Module</a></li>
 <li><a class="reference internal" href="#example">Example</a></li>
 </ul>
 </li>
@@ -202,8 +202,69 @@ self.residual.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="the-pyma57-module">
-<h2>The <code class="xref py py-mod docutils literal"><span class="pre">pyma57</span></code> Module<a class="headerlink" href="#the-pyma57-module" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-hsl.solvers.pyma57">
+<span id="the-pyma57-module"></span><h2>The <code class="xref py py-mod docutils literal"><span class="pre">pyma57</span></code> Module<a class="headerlink" href="#module-hsl.solvers.pyma57" title="Permalink to this headline">¶</a></h2>
+<p>Ma57: Direct multifrontal solution of symmetric systems.</p>
+<dl class="class">
+<dt id="hsl.solvers.pyma57.PyMa57Solver">
+<em class="property">class </em><code class="descclassname">hsl.solvers.pyma57.</code><code class="descname">PyMa57Solver</code><span class="sig-paren">(</span><em>A</em>, <em>factorize=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.solvers.pyma57.PyMa57Solver" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">hsl.solvers.sils.Sils</span></code></p>
+<dl class="method">
+<dt id="hsl.solvers.pyma57.PyMa57Solver.factorize">
+<code class="descname">factorize</code><span class="sig-paren">(</span><em>A</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.solvers.pyma57.PyMa57Solver.factorize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform numerical factorization.</p>
+<p>Before this can be done, symbolic factorization (the <cite>analyze</cite> phase)
+must have been performed.</p>
+<p>The values of the elements of the matrix may have been altered since
+the analyze phase but the sparsity pattern must not have changed. Use
+the optional argument newA to specify the updated matrix if applicable.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hsl.solvers.pyma57.PyMa57Solver.fetch_perm">
+<code class="descname">fetch_perm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hsl.solvers.pyma57.PyMa57Solver.fetch_perm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the permutation vector p.</p>
+<p>Permutation vector is used
+to compute the factorization of A. Rows and columns
+were permuted so that</p>
+<blockquote>
+<div>Pᵀ A P = L B Lᵀ</div></blockquote>
+<p>where i-th row of P is the p(i)-th row of the
+identity matrix, L is unit upper triangular and
+B is block diagonal with 1x1 and 2x2 blocks.</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="hsl.solvers.pyma57.PyMa57Solver.inertia">
+<code class="descname">inertia</code><a class="headerlink" href="#hsl.solvers.pyma57.PyMa57Solver.inertia" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return inertia of matrix A.</p>
+<p>Inertia of a matrix is given by (# of λ&gt;0, # of λ&lt;0, # λ=0).</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hsl.solvers.pyma57.PyMa57Solver.refine">
+<code class="descname">refine</code><span class="sig-paren">(</span><em>b</em>, <em>nitref=3</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.solvers.pyma57.PyMa57Solver.refine" title="Permalink to this definition">¶</a></dt>
+<dd><p>Perform iterative refinement if necessary.</p>
+<p>Iterative refinement is performed until the scaled residual norm
+‖b-Ax‖/(1+‖b‖) falls below the threshold &#8216;tol&#8217; or until nitref steps
+are taken.
+Make sure you have called <cite>solve()</cite> with the same right-hand side b
+before calling <cite>refine()</cite>.
+The residual vector <cite>self.residual</cite> will be updated to reflect the
+updated approximate solution.</p>
+<p>By default, nitref = 3.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="hsl.solvers.pyma57.PyMa57Solver.solve">
+<code class="descname">solve</code><span class="sig-paren">(</span><em>b</em>, <em>get_resid=True</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.solvers.pyma57.PyMa57Solver.solve" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solve the linear system of equations Ax = b.</p>
+<p>The solution will be found in self.x and residual in
+<cite>self.residual</cite>.</p>
+</dd></dl>
+
+</dd></dl>
+
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>

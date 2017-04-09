@@ -81,7 +81,7 @@
 <li><a class="reference internal" href="#">Tools</a><ul>
 <li><a class="reference internal" href="#conversion">Conversion</a></li>
 <li><a class="reference internal" href="#matrix-readers">Matrix readers</a></li>
-<li><a class="reference internal" href="#sparsity-pattern">Sparsity pattern</a></li>
+<li><a class="reference internal" href="#module-hsl.tools.spy">Sparsity pattern</a></li>
 <li><a class="reference internal" href="#example">Example</a></li>
 </ul>
 </li>
@@ -256,6 +256,229 @@ of the nonzeros.</td>
 </div>
 <div class="section" id="matrix-readers">
 <h2>Matrix readers<a class="headerlink" href="#matrix-readers" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-hsl.tools.hrb"><span id="readers-section"></span></span><p>Harwell-Boeing and Rutherford-Boeing matrix format reader.</p>
+<p>Provides access to sparse linear systems described in Harwell-Boeing or
+Rutherford-Boeing format. This module exposes the two classes
+HarwellBoeingMatrix and RutherfordBoeingData. For more information, see
+the references below.</p>
+<p><strong>References</strong></p>
+<table class="docutils citation" frame="void" id="dgl" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[DGL]</td><td>I.S. Duff, R.G. Grimes and J.G. Lewis,
+Sparse Matrix Test Problems, ACM Transactions on
+Mathematical Software, 15(1), p.1-14, 1989</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="hbug" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[HBUG]</td><td><a class="reference external" href="ftp://ftp.cerfacs.fr/pub/algo/matrices/harwell_boeing/userguide.ps.Z">ftp://ftp.cerfacs.fr/pub/algo/matrices/harwell_boeing/userguide.ps.Z</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="hb" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[HB]</td><td><a class="reference external" href="http://math.nist.gov/MatrixMarket/data/Harwell-Boeing">http://math.nist.gov/MatrixMarket/data/Harwell-Boeing</a></td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="rbc" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[RBC]</td><td>The Rutherford-Boeing Sparse Matrix Collection,
+I.S. Duff, R.G. Grimes and J.G. Lewis, Technical Report RAL-TR-97-031,
+Rutherford Appleton Laboratory, Chilton, OX, UK, 1997.
+(<a class="reference external" href="ftp://ftp.numerical.rl.ac.uk/pub/reports/duglRAL97031.pdf">ftp://ftp.numerical.rl.ac.uk/pub/reports/duglRAL97031.pdf</a>)</td></tr>
+</tbody>
+</table>
+<table class="docutils citation" frame="void" id="rb" rules="none">
+<colgroup><col class="label" /><col /></colgroup>
+<tbody valign="top">
+<tr><td class="label">[RB]</td><td><a class="reference external" href="http://www.cerfacs.fr/algor/Softs/RB">http://www.cerfacs.fr/algor/Softs/RB</a></td></tr>
+</tbody>
+</table>
+<dl class="class">
+<dt id="hsl.tools.hrb.HarwellBoeingMatrix">
+<em class="property">class </em><code class="descclassname">hsl.tools.hrb.</code><code class="descname">HarwellBoeingMatrix</code><span class="sig-paren">(</span><em>fname</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.hrb.HarwellBoeingMatrix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<p>Import a sparse matrix from a file in Harwell-Boeing format.</p>
+<p>The matrix is stored in compressed sparse row format in (self.ind, self.ip,
+self.val). Right-hand sides, if any, are stored in self.rhs. Right-hand
+sides can be stored as dense vectors, in which case self.rhs has shape
+(nrow, nrhs), as sparse vectors, in which case they are stored in
+compressed sparse column format in (self.rhsptr, self.rhsind, self.rhs), or
+in elemental format (typically when the matrix itself is stored in
+finite-element format), in which case self.rhs has shape (nnzero, nrhs).</p>
+<p>Note that the matrix indices are zero-based, i.e., row indices range
+from 0 through nrow-1 and column indices range from 0 through ncol-1.</p>
+<dl class="docutils">
+<dt>The matrix can be subsequently converted to triple format with</dt>
+<dd>(val, row, col) = self.find()</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">pattern_only:</th><td class="field-body">do not read matrix element values (False)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">read_rhs:</th><td class="field-body">read right-hand sides, if any (False)</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">read_guess:</th><td class="field-body">read starting guess, if any (False)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">realSol:</th><td class="field-body">read solution vector, if any (False)</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="hsl.tools.hrb.HarwellBoeingMatrix.data">
+<code class="descname">data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.hrb.HarwellBoeingMatrix.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return matrix data in compressed sparse row format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">val:</th><td class="field-body">array of values of nonzero elements</td>
+</tr>
+<tr class="field-even field"><th class="field-name">ip:</th><td class="field-body">array of pointer to rows</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">ind:</th><td class="field-body">array of indices of nonzero elements in each row</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="hsl.tools.hrb.HarwellBoeingMatrix.find">
+<code class="descname">find</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.hrb.HarwellBoeingMatrix.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return matrix data in coordinate format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">val:</th><td class="field-body">array of values of nonzero elements</td>
+</tr>
+<tr class="field-even field"><th class="field-name">irow:</th><td class="field-body">array of indices of nonzero elements in each row</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">jcol:</th><td class="field-body">array of indices of nonzero elements in each column</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="hsl.tools.hrb.RutherfordBoeingData">
+<em class="property">class </em><code class="descclassname">hsl.tools.hrb.</code><code class="descname">RutherfordBoeingData</code><span class="sig-paren">(</span><em>fname</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.hrb.RutherfordBoeingData" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#hsl.tools.hrb.HarwellBoeingMatrix" title="hsl.tools.hrb.HarwellBoeingMatrix"><code class="xref py py-class docutils literal"><span class="pre">hsl.tools.hrb.HarwellBoeingMatrix</span></code></a></p>
+<p>Imports data from a file in Rutherford-Boeing format.</p>
+<p>The data is held in (self.ind, self.ip, self.val). If the data represents a
+sparse matrix, the three arrays represent the matrix stored in compressed
+sparse row format. Otherwise, the three arrays represent the supplementary
+data. Refer to the Rutherford-Boeing documentation for more information
+(reference [4] in the docstring for the present module.)</p>
+<p>Note that the matrix indices are zero-based, i.e., row indices range from
+0 through nrow-1 and column indices range from 0 through ncol-1.</p>
+<dl class="docutils">
+<dt>The data can be subsequently converted to triple format with</dt>
+<dd>(val, row, col) = self.find()</dd>
+</dl>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">pattern_only:</th><td class="field-body">do not read data values (False)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">transposed:</th><td class="field-body"></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="hsl.tools.hrb.RutherfordBoeingData.data">
+<code class="descname">data</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.hrb.RutherfordBoeingData.data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return matrix data in compressed sparse row format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">val:</th><td class="field-body">array of values of nonzero elements</td>
+</tr>
+<tr class="field-even field"><th class="field-name">ip:</th><td class="field-body">array of pointer to rows</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">ind:</th><td class="field-body">array of indices of nonzero elements in each row</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="hsl.tools.hrb.RutherfordBoeingData.find">
+<code class="descname">find</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.hrb.RutherfordBoeingData.find" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return matrix data in coordinate format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">val:</th><td class="field-body">array of values of nonzero elements</td>
+</tr>
+<tr class="field-even field"><th class="field-name">irow:</th><td class="field-body">array of indices of nonzero elements in each row</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">jcol:</th><td class="field-body">array of indices of nonzero elements in each column</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
 <span class="target" id="module-hsl.tools.mtx"></span><p>Read a sparse matrix in Matrix Market format.</p>
 <p>See <a class="reference external" href="http://math.nist.gov/MatrixMarket">http://math.nist.gov/MatrixMarket</a> for a description of this format.</p>
 <dl class="class">
@@ -276,8 +499,116 @@ is available, this method returns (irow,jcol).</p>
 </dd></dl>
 
 </div>
-<div class="section" id="sparsity-pattern">
-<h2>Sparsity pattern<a class="headerlink" href="#sparsity-pattern" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-hsl.tools.spy">
+<span id="sparsity-pattern"></span><h2>Sparsity pattern<a class="headerlink" href="#module-hsl.tools.spy" title="Permalink to this headline">¶</a></h2>
+<p>Plot the sparsity pattern of a sparse matrix.</p>
+<dl class="function">
+<dt id="hsl.tools.spy.spy">
+<code class="descclassname">hsl.tools.spy.</code><code class="descname">spy</code><span class="sig-paren">(</span><em>A</em>, <em>patternonly=True</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.spy.spy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the sparsity pattern of a sparse matrix object.</p>
+<p>The sparse matrix object must implement <cite>find()</cite>, which must return the
+contents of the matrix in coordinate format, i.e., (val,irow,jcol).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">A:</th><td class="field-body">Input matrix</td>
+</tr>
+<tr class="field-even field"><th class="field-name">patternonly:</th><td class="field-body">If <cite>True</cite>, only output a black and white sparsity
+pattern. If <cite>False</cite>, colorize the plot according to the
+magnitude of the nonzero elements.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ax:</th><td class="field-body">A Pylab Axes instance used to plot the sparsity pattern. If none
+is given, this function returns an Axes instance.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">title:</th><td class="field-body">String to be used as title for the plot. If none is given,
+the title defaults to giving the order of the matrix and the
+number of nonzero elements.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">comment:</th><td class="field-body">Comment to be appended to the default plot title in case no
+title is supplied.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">showtitle:</th><td class="field-body">Show or hide plot title.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="hsl.tools.spy.fast_spy">
+<code class="descclassname">hsl.tools.spy.</code><code class="descname">fast_spy</code><span class="sig-paren">(</span><em>nrow</em>, <em>ncol</em>, <em>irow</em>, <em>jcol</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="headerlink" href="#hsl.tools.spy.fast_spy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the sparsity pattern of a sparse matrix in coordinate format.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><table class="first docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">nrow:</th><td class="field-body">Number of rows of the matrix.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">ncol:</th><td class="field-body">Number of columns of the matrix.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">irow:</th><td class="field-body">Integer Numpy array of length nnz giving the row indices of the
+nonzero elements.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">jcol:</th><td class="field-body">Integer Numpy array of length nnz giving the column indices of
+the nonzero elements.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Keywords:</th><td class="field-body"><table class="first last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">ax:</th><td class="field-body">A Pylab Axes instance used to plot the sparsity pattern. If none
+is given, this function returns an Axes instance.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">sym:</th><td class="field-body">Should be set to True if the matrix is symmetric and only one
+triangle is passed in (irow,jcol).</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">title:</th><td class="field-body">String to be used as title for the plot. If none is given,
+the title defaults to giving the order of the matrix and the
+number of nonzero elements.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">comment:</th><td class="field-body">Comment to be appended to the default plot title in case no
+title is supplied.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">showtitle:</th><td class="field-body">Show or hide plot title.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">val:</th><td class="field-body">Float Numpy array of length nnz giving the values of the nonzero
+elements of the matrix. If supplied, a scatter plot is produced
+with patches of size proportional to the magnitude of the
+element. This option can slow down the plot for large values of
+the number of nonzero elements.</td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="example">
 <h2>Example<a class="headerlink" href="#example" title="Permalink to this headline">¶</a></h2>
