@@ -1,5 +1,4 @@
 numpy>=1.9.2
-cygenja
 sphinx-bootstrap-theme>=0.4.5
 fortranformat
 pytest

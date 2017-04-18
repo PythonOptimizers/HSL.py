@@ -36,6 +36,8 @@ def make_parser():
 
     parser.add_argument("-c", "--clean", help="Clean action files",
                         action='store_true', required=False)
+    parser.add_argument("-r", "--recursice", help="Run recursively",
+                        action='store_true', required=False)
     parser.add_argument("-d", "--dry_run", help="Dry run: no action is taken",
                         action='store_true', required=False)
     parser.add_argument("-f", "--force", help="Force generation no matter what",
