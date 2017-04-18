@@ -137,12 +137,12 @@ include_dirs = [numpy_include, 'include', '.']
 ## Extensions using Fortran codes
 
 # Relevant files for building MA27 extension.
-ma27_src = ['fd05ad.f', 'ma27ad.f']
+ma27_src = ['ma27s.f', 'ma27d.f']
 libma27_src = ['ma27fact.f']
 pyma27_src = ['ma27_lib.c', 'hsl_alloc.c', '_pyma27.c']
 
 # Build PyMA27
-ma27_sources = [os.path.join(hsl_rootdir, name) for name in ma27_src]
+ma27_sources = [os.path.join(hsl_rootdir, 'ma27', 'src', name) for name in ma27_src]
 ma27_sources += [os.path.join('hsl', 'solvers', 'src', name) for name in libma27_src]
 pyma27_sources = [os.path.join('hsl', 'solvers', 'src', name) for name in pyma27_src]
 
@@ -158,12 +158,14 @@ if files_exist(ma27_sources):
                          include_dirs=['include', os.path.join('hsl','solvers','src')],)
 
 # Build PyMA57
-ma57_src = ['ddeps.f', 'ma57d.f']
-ma57_sources = [os.path.join(hsl_rootdir, 'ma57d', name) for name in ma57_src]
+ma57_src = ['ddeps.f', 'ma57d.f', 'sdeps.f', 'ma57s.f']
+ma57_sources = [os.path.join(hsl_rootdir, 'ma57', 'src', name) for name in ma57_src]
 pyma57_src = ['ma57_lib.c', 'hsl_alloc.c', '_pyma57.c']
 pyma57_sources = [os.path.join('hsl','solvers','src',name) for name in pyma57_src]
 
 if files_exist(ma57_sources):
+    if not metis_lib:
+        ma57_src += ['fakemetis.f']
     config.add_library(name='hsl_ma57',
                        sources=ma57_sources,
                        libraries=[metis_lib],
@@ -176,34 +178,39 @@ if files_exist(ma57_sources):
                          library_dirs=[metis_dir],
                          include_dirs=['include',os.path.join('hsl','solvers','src')],)
 
-mc29_sources = [os.path.join(hsl_rootdir, 'mc29d', 'mc29d.f'),
-                os.path.join('hsl', 'scaling', 'src', 'mc29.pyf')]
+mc29_src = ['mc29d.f', 'mc29s.f']
+mc29_sources = [os.path.join(hsl_rootdir, 'mc29', 'src', name) for name in mc29_src]
+mc29_sources += [os.path.join('hsl', 'scaling', 'src', 'mc29.pyf')]
 
-config.add_extension(
-        name='scaling._mc29',
-        sources=mc29_sources,
-        include_dirs=[os.path.join('hsl', 'scaling', 'src')],
-        extra_link_args=[])
+if files_exist(mc29_sources):
+    config.add_extension(
+            name='scaling._mc29',
+            sources=mc29_sources,
+            include_dirs=[os.path.join('hsl', 'scaling', 'src')],
+            extra_link_args=[])
+
+mc21_src = ['mc21d.f', 'mc21s.f']
+mc21_sources = [os.path.join(hsl_rootdir, 'mc21', 'src', name) for name in mc21_src]
+mc21_sources += [os.path.join('hsl', 'ordering', 'src', 'mc21.pyf')]
+
+if files_exist(mc21_sources):
+    config.add_extension(
+            name='ordering._mc21',
+            sources=mc21_sources,
+            include_dirs=[os.path.join('hsl', 'ordering', 'src')],
+            extra_link_args=[])
 
 
-mc21_sources = [os.path.join(hsl_rootdir,  'mc21d', 'mc21d.f'),
-                os.path.join('hsl', 'ordering', 'src', 'mc21.pyf')]
+mc60_src = ['mc60d.f', 'mc60s.f']
+mc60_sources = [os.path.join(hsl_rootdir, 'mc60', 'src', name) for name in mc60_src]
+mc60_sources += [os.path.join('hsl', 'ordering', 'src', 'mc60.pyf')]
 
-config.add_extension(
-        name='ordering._mc21',
-        sources=mc21_sources,
-        include_dirs=[os.path.join('hsl', 'ordering', 'src')],
-        extra_link_args=[])
-
-
-mc60_sources = [os.path.join(hsl_rootdir, 'mc60d', 'mc60d.f'),
-                os.path.join('hsl', 'ordering', 'src', 'mc60.pyf')]
-
-config.add_extension(
-        name='ordering._mc60',
-        sources=mc60_sources,
-        include_dirs=[os.path.join('hsl', 'ordering', 'src')],
-        extra_link_args=[])
+if files_exist(mc60_sources):
+    config.add_extension(
+            name='ordering._mc60',
+            sources=mc60_sources,
+            include_dirs=[os.path.join('hsl', 'ordering', 'src')],
+            extra_link_args=[])
 
 ## Extensions using Cython
 ext_params = {}
@@ -218,30 +225,30 @@ else:
 context_ext_params = copy.deepcopy(ext_params)
 {% for index_type in index_list %}
   {% for element_type in type_list %}
-cyma27_src_@index_type@_@element_type@ = ['ma27_lib.c',
-                                          'hsl_alloc.c',
-                                          '_cyma27_base_@index_type@_@element_type@.c']
-cyma27_sources_@index_type@_@element_type@ = [os.path.join('hsl', 'solvers', 'src', name) for name in cyma27_src_@index_type@_@element_type@]
+if files_exist(ma27_sources):
+    cyma27_src_@index_type@_@element_type@ = ['ma27_lib.c',
+                                              'hsl_alloc.c',
+                                              '_cyma27_base_@index_type@_@element_type@.c']
+    cyma27_sources_@index_type@_@element_type@ = [os.path.join('hsl', 'solvers', 'src', name) for name in cyma27_src_@index_type@_@element_type@]
 
-cyma27_base_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-cyma27_base_ext_params_@index_type@_@element_type@['libraries'] = ['hsl_ma27']
-retval = os.getcwd()
-os.chdir('hsl/solvers/src')
-call(['cython', '_cyma27_base_@index_type@_@element_type@.pyx'])
-os.chdir(retval)
-config.add_extension(
-            name='solvers.src._cyma27_base_@index_type@_@element_type@',
-            sources=cyma27_sources_@index_type@_@element_type@,
-            **cyma27_base_ext_params_@index_type@_@element_type@)
+    cyma27_base_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
+    cyma27_base_ext_params_@index_type@_@element_type@['libraries'] = ['hsl_ma27']
+    retval = os.getcwd()
+    os.chdir('hsl/solvers/src')
+    call(['cython', '_cyma27_base_@index_type@_@element_type@.pyx'])
+    os.chdir(retval)
+    config.add_extension(name='solvers.src._cyma27_base_@index_type@_@element_type@',
+                         sources=cyma27_sources_@index_type@_@element_type@,
+                         **cyma27_base_ext_params_@index_type@_@element_type@)
 
-retval = os.getcwd()
-os.chdir('hsl/solvers/src')
-call(['cython', '_cyma27_numpy_@index_type@_@element_type@.pyx'])
-os.chdir(retval)
-cyma27_numpy_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-config.add_extension(name="solvers.src._cyma27_numpy_@index_type@_@element_type@",
-                 sources=['hsl/solvers/src/_cyma27_numpy_@index_type@_@element_type@.c'],
-                 **cyma27_numpy_ext_params_@index_type@_@element_type@)
+    retval = os.getcwd()
+    os.chdir('hsl/solvers/src')
+    call(['cython', '_cyma27_numpy_@index_type@_@element_type@.pyx'])
+    os.chdir(retval)
+    cyma27_numpy_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
+    config.add_extension(name="solvers.src._cyma27_numpy_@index_type@_@element_type@",
+                         sources=['hsl/solvers/src/_cyma27_numpy_@index_type@_@element_type@.c'],
+                         **cyma27_numpy_ext_params_@index_type@_@element_type@)
 
   {% endfor %}
 {% endfor %}
@@ -249,31 +256,32 @@ config.add_extension(name="solvers.src._cyma27_numpy_@index_type@_@element_type@
 
 {% for index_type in index_list %}
   {% for element_type in type_list %}
-cyma57_src_@index_type@_@element_type@ = ['ma57_lib.c',
-                                          'hsl_alloc.c',
-                                          '_cyma57_base_@index_type@_@element_type@.c']
-cyma57_sources_@index_type@_@element_type@ = [os.path.join('hsl', 'solvers', 'src', name) for name in cyma57_src_@index_type@_@element_type@]
+if files_exist(ma57_sources):
+    cyma57_src_@index_type@_@element_type@ = ['ma57_lib.c',
+                                              'hsl_alloc.c',
+                                              '_cyma57_base_@index_type@_@element_type@.c']
+    cyma57_sources_@index_type@_@element_type@ = [os.path.join('hsl', 'solvers', 'src', name) for name in cyma57_src_@index_type@_@element_type@]
 
-base_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-base_ext_params_@index_type@_@element_type@['library_dirs'] = [metis_dir]
-base_ext_params_@index_type@_@element_type@['libraries'] = [metis_lib, 'hsl_ma57']
-retval = os.getcwd()
-os.chdir('hsl/solvers/src')
-call(['cython', '_cyma57_base_@index_type@_@element_type@.pyx'])
-os.chdir(retval)
-config.add_extension(
-            name='solvers.src._cyma57_base_@index_type@_@element_type@',
-            sources=cyma57_sources_@index_type@_@element_type@,
-            **base_ext_params_@index_type@_@element_type@)
+    base_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
+    base_ext_params_@index_type@_@element_type@['library_dirs'] = [metis_dir]
+    base_ext_params_@index_type@_@element_type@['libraries'] = [metis_lib, 'hsl_ma57']
+    retval = os.getcwd()
+    os.chdir('hsl/solvers/src')
+    call(['cython', '_cyma57_base_@index_type@_@element_type@.pyx'])
+    os.chdir(retval)
+    config.add_extension(
+                name='solvers.src._cyma57_base_@index_type@_@element_type@',
+                sources=cyma57_sources_@index_type@_@element_type@,
+                **base_ext_params_@index_type@_@element_type@)
 
-retval = os.getcwd()
-os.chdir('hsl/solvers/src')
-call(['cython', '_cyma57_numpy_@index_type@_@element_type@.pyx'])
-os.chdir(retval)
-numpy_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-config.add_extension(name="solvers.src._cyma57_numpy_@index_type@_@element_type@",
-                 sources=['hsl/solvers/src/_cyma57_numpy_@index_type@_@element_type@.c'],
-                 **numpy_ext_params_@index_type@_@element_type@)
+    retval = os.getcwd()
+    os.chdir('hsl/solvers/src')
+    call(['cython', '_cyma57_numpy_@index_type@_@element_type@.pyx'])
+    os.chdir(retval)
+    numpy_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
+    config.add_extension(name="solvers.src._cyma57_numpy_@index_type@_@element_type@",
+                     sources=['hsl/solvers/src/_cyma57_numpy_@index_type@_@element_type@.c'],
+                     **numpy_ext_params_@index_type@_@element_type@)
 
   {% endfor %}
 {% endfor %}
@@ -281,29 +289,31 @@ config.add_extension(name="solvers.src._cyma57_numpy_@index_type@_@element_type@
 if build_cysparse_ext:
 {% for index_type in index_list %}
   {% for element_type in type_list %}
-    retval = os.getcwd()
-    os.chdir('hsl/solvers/src')
-    call(['cython', '-I', cysparse_rootdir[0], '_cyma27_cysparse_@index_type@_@element_type@.pyx'])
-    os.chdir(retval)
-    cyma27_cysparse_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-    cyma27_cysparse_ext_params_@index_type@_@element_type@['include_dirs'].extend(cysparse_rootdir)
-    config.add_extension(name="solvers.src._cyma27_cysparse_@index_type@_@element_type@",
-                 sources=['hsl/solvers/src/_cyma27_cysparse_@index_type@_@element_type@.c'],
-                 **cyma27_cysparse_ext_params_@index_type@_@element_type@)
+    if files_exist(ma27_sources):
+        retval = os.getcwd()
+        os.chdir('hsl/solvers/src')
+        call(['cython', '-I', cysparse_rootdir[0], '_cyma27_cysparse_@index_type@_@element_type@.pyx'])
+        os.chdir(retval)
+        cyma27_cysparse_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
+        cyma27_cysparse_ext_params_@index_type@_@element_type@['include_dirs'].extend(cysparse_rootdir)
+        config.add_extension(name="solvers.src._cyma27_cysparse_@index_type@_@element_type@",
+                     sources=['hsl/solvers/src/_cyma27_cysparse_@index_type@_@element_type@.c'],
+                     **cyma27_cysparse_ext_params_@index_type@_@element_type@)
   {% endfor %}
 {% endfor %}
 
 {% for index_type in index_list %}
   {% for element_type in type_list %}
-    retval = os.getcwd()
-    os.chdir('hsl/solvers/src')
-    call(['cython', '-I', cysparse_rootdir[0], '_cyma57_cysparse_@index_type@_@element_type@.pyx'])
-    os.chdir(retval)
-    cyma57_cysparse_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-    cyma57_cysparse_ext_params_@index_type@_@element_type@['include_dirs'].extend(cysparse_rootdir)
-    config.add_extension(name="solvers.src._cyma57_cysparse_@index_type@_@element_type@",
-                 sources=['hsl/solvers/src/_cyma57_cysparse_@index_type@_@element_type@.c'],
-                 **cyma57_cysparse_ext_params_@index_type@_@element_type@)
+    if files_exist(ma57_sources):
+        retval = os.getcwd()
+        os.chdir('hsl/solvers/src')
+        call(['cython', '-I', cysparse_rootdir[0], '_cyma57_cysparse_@index_type@_@element_type@.pyx'])
+        os.chdir(retval)
+        cyma57_cysparse_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
+        cyma57_cysparse_ext_params_@index_type@_@element_type@['include_dirs'].extend(cysparse_rootdir)
+        config.add_extension(name="solvers.src._cyma57_cysparse_@index_type@_@element_type@",
+                     sources=['hsl/solvers/src/_cyma57_cysparse_@index_type@_@element_type@.c'],
+                     **cyma57_cysparse_ext_params_@index_type@_@element_type@)
   {% endfor %}
 {% endfor %}
 
@@ -333,4 +343,9 @@ with open(path.join(here, 'DESCRIPTION.rst'), encoding='utf-8') as f:
 
 config.make_config_py()
 
-setup(packages=packages_list, zip_safe=False, **config.todict())
+if config.ext_modules == []:
+    msg = "Not building HSL.py, please provide some source files for"
+    msg += " either mc21, mc29, mc60, ma27 or ma57"
+    print msg
+else:
+    setup(packages=packages_list, zip_safe=False, **config.todict())
