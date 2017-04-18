@@ -1,0 +1,74 @@
+{% extends "layout.html" %}
+{% set title = 'Home Page' %}
+{% block body %}
+<h1>HSL.py: Harwell Subroutine Library wrappers in Python/Cython<h1>
+
+<p>
+HSL.py is a package is a set of Cython/Python interfaces to some of the Harwell Subroutine Library: a collection of state-of-the-art packages for large-scale scientific computation. These packages are written mostly in Fortran and often provide C interfaces but no Python interfaces.
+</p>
+
+<p>
+Be sure to check the <a href="{{ pathto('contents') }}">Documentation</a> for
+examples.
+</p>
+
+<p>
+HSL.py is <a href="http://www.open-source.org">open-source</a>
+software distributed under the tems of the
+<a href="http://www.gnu.org/licenses/lgpl.html">GNU Lesser General Public
+License</a>.
+</p>
+
+<h2>Documentation</h2>
+<table class="contentstable" align="center" style="margin-left: 30px"><tr>
+  <td width="50%">
+    <p class="biglink"><a class="biglink" href="{{ pathto("tutorial") }}">First steps with HSL.py</a><br/>
+    <span class="linkdescr">overview of basic tasks</span></p>
+    <p class="biglink"><a class="biglink" href="{{ pathto("contents") }}">Contents</a><br/>
+    <span class="linkdescr">for a complete overview</span></p>
+  </td><td width="50%">
+    <p class="biglink"><a class="biglink" href="{{ pathto("genindex") }}">General Index</a><br/>
+    <span class="linkdescr">all functions, classes, terms</span></p>
+  </td></tr>
+</table>
+
+<p>
+The complete documentation is also available in
+<a href="https://github.com/PythonOptimizers/HSL.py/tree/develop/doc/HSL.pdf">PDF</a> format.
+</p>
+
+<h2>Obtaining HSL.py</h2>
+
+<h3>If You Use Git</h3>
+<p>
+HSL.py is available in source form directly from the Git repository using
+</p>
+
+
+<div class="highlight-rst">
+    <div class="highlight"><pre><span></span>$ git clone https://github.com/PythonOptimizers/HSL.py</pre>
+    </div>
+</div>
+
+<p>
+Everytime you wish to update your HSL.py source files, simply bring your tree up
+to date:
+</p>
+
+<div class="highlight-rst">
+    <div class="highlight"><pre><span></span>$ git pull origin master</pre>
+    </div>
+</div>
+
+<p></p>
+
+<h3>If You Do Not Use Git</h3>
+<p>
+Navigate to <a class="reference external" href="https://github.com/PythonOptimizers/HSL.py">GitHub</a>
+</p>
+
+<p>
+By clicking the ZIP button, you will be able to download NLP.py as a ZIP archive.
+</p>
+
+{% endblock %}

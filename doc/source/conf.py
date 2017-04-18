@@ -22,8 +22,6 @@ sys.path.append('sphinxext')
 import ipython_console_highlighting
 import mathjax
 
-import sphinx_bootstrap_theme
-
 # General configuration
 # ---------------------
 
@@ -116,17 +114,29 @@ todo_include_todos = False
 # The style sheet to use for HTML and HTML Help pages. A file of that name
 # must exist either in Sphinx' static/ path, or in one of the custom paths
 # given in html_static_path.
-html_theme = "bootstrap"
-html_theme_path = sphinx_bootstrap_theme.get_html_theme_path()
-html_theme_options = {
-  'source_link_position': "footer",
-  # Bootswatch (http://bootswatch.com/) theme.
-  'bootswatch_theme': "spacelab",
-}
+html_theme = "sphinx_julia_theme"
+import sphinx_julia_theme
+import sphinx_rtd_theme
+
+# extensions += ['juliadoc.julia', 'juliadoc.jlhelp']
+html_theme_path = [sphinx_rtd_theme.get_html_theme_path(),
+                   sphinx_julia_theme.get_theme_dir()]
+print html_theme_path
+html_sidebars = sphinx_julia_theme.default_sidebars()
+
+
+html_theme_options = {'display_version': False}
+
+html_context = {'conf_py_path': os.path.join(os.sep, 'doc', 'source', ''),
+                'github_user': 'PythonOptimizers',
+                'github_repo': 'HSL.py',
+                'github_version': 'master',
+                'display_github': True}
+
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
-#html_title = None
+html_title = u"HSL.py: Harwell Subroutine Library wrappers in Python/Cython"
 
 # A shorter title for the navigation bar.  Default is the same as html_title.
 #html_short_title = None
@@ -143,7 +153,7 @@ html_theme_options = {
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['static']
+html_static_path = ['.static']
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
@@ -156,11 +166,11 @@ html_static_path = ['static']
 html_index = 'index.html'
 
 # Custom sidebar templates, maps document names to template names.
-#html_sidebars = {'index' : 'indexsidebar.html'}
+html_sidebars = {'index' : 'indexsidebar.html'}
 
 # Additional templates that should be rendered to pages, maps page names to
 # template names.
-#html_additional_pages = {'index' : 'index.html'}
+html_additional_pages = {'index' : 'index.html'}
 
 # If false, no module index is generated.
 #html_use_modindex = True

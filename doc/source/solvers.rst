@@ -33,10 +33,7 @@ Example
 =======
 
 .. literalinclude:: ../../examples/demo_cyma57_numpy.py
-   :linenos:
 
 .. literalinclude:: ../../examples/demo_cyma57_cysparse.py
-   :linenos:
 
 .. literalinclude:: ../../examples/demo_sils.py
-   :linenos:
