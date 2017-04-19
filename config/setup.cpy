@@ -80,7 +80,7 @@ if use_cython:
         from Cython.Distutils import build_ext
         from Cython.Build import cythonize
     except ImportError:
-        raise ImportError("Check '%s': Cython is not properly installed." % hsl_config_file)
+        raise ImportError("Check '%s': Cython is not properly installed." % hsl_config)
 
 # DEFAULT
 default_include_dir = hsl_config.get('DEFAULT', 'include_dirs').split(os.pathsep)
