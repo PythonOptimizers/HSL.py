@@ -25,11 +25,11 @@ cdef extern from "ma27.h":
         int       rank;               # Matrix rank
 
         int       la
-        @type|generic_to_c_type@   *factors             # Matrix factors
+        double   *factors             # Matrix factors
         int       maxfrt
-        @type|generic_to_c_type@   *w                   # Real workspace
+        double   *w                   # Real workspace
 
-        @type|generic_to_c_type@   *residual            # = b - Ax
+        double   *residual            # = b - Ax
         char      fetched             # Factors have been fetched
                                       # Used for de-allocation
 
@@ -37,23 +37,23 @@ cdef extern from "ma27.h":
 
     cdef Ma27_Data *Ma27_Initialize( int nz, int n, FILE *logfile )
     cdef int  Ma27_Analyze( Ma27_Data *ma27, int iflag );
-    cdef int  Ma27_Factorize( Ma27_Data *ma27, @type|generic_to_c_type@ A[] );
-    cdef int  Ma27_Solve( Ma27_Data *ma27, @type|generic_to_c_type@ x[] );
-    cdef int  Ma27_Refine( Ma27_Data *ma27, @type|generic_to_c_type@ x[], @type|generic_to_c_type@ rhs[], @type|generic_to_c_type@ A[],
+    cdef int  Ma27_Factorize( Ma27_Data *ma27, double A[] );
+    cdef int  Ma27_Solve( Ma27_Data *ma27, double x[] );
+    cdef int  Ma27_Refine( Ma27_Data *ma27, double x[], double rhs[], double A[],
                            double tol, int maxitref );
     cdef void Ma27_Finalize( Ma27_Data *ma27 );
     cdef int  Process_Error_Code( Ma27_Data *ma27, int error );
 
 
-cdef c_to_fortran_index_array(@index|generic_to_c_type@ * a, @index|generic_to_c_type@ a_size):
+cdef c_to_fortran_index_array(int * a, int a_size):
     cdef:
-        @index|generic_to_c_type@ i
+        int i
 
     for i from 0 <= i < a_size:
         a[i] += 1
 
 
-cdef class BaseMA27Solver_@index@_@type@:
+cdef class BaseMA27Solver_INT32_FLOAT64:
     def __cinit__(self, int m, int n, int nnz, bint sqd=False, verbose=False):
         assert m == n
 
@@ -62,7 +62,7 @@ cdef class BaseMA27Solver_@index@_@type@:
 
         self.data = Ma27_Initialize(self.nnz, self.n, NULL)
 
-        self.a = <@type|generic_to_c_type@ *> PyMem_Malloc(self.nnz * sizeof(@type|generic_to_c_type@))
+        self.a = <double *> PyMem_Malloc(self.nnz * sizeof(double))
 
         # Set pivot-for-stability threshold if matrix is SQD
         if sqd:
@@ -137,7 +137,7 @@ cdef class BaseMA27Solver_@index@_@type@:
             self.data.rank = self.data.info[1]
         return
 
-    def solve(self, np.ndarray[@type|generic_to_c_type@, ndim=1] rhs, bint get_resid):
+    def solve(self, np.ndarray[double, ndim=1] rhs, bint get_resid):
         """
         solve(b) solves the linear system of equations Ax = b.
         The solution will be found in self.x and residual in
@@ -151,14 +151,14 @@ cdef class BaseMA27Solver_@index@_@type@:
                              "and rhs is of size (%g)"%(self.n, self.n, rhs.size))
 
         x = rhs.copy() # x<- rhs ; will be overwritten
-        error = Ma27_Solve(self.data, <@type|generic_to_c_type@ *> np.PyArray_DATA(x))
+        error = Ma27_Solve(self.data, <double *> np.PyArray_DATA(x))
         if error:
             raise RuntimeError("Error return code from Solve: %-d\n", error)
 
         # When residual is requested, compute r = rhs - Ax
         if get_resid:
             residual = rhs.copy()
-            self.data.residual = <@type|generic_to_c_type@ *> np.PyArray_DATA(residual)
+            self.data.residual = <double *> np.PyArray_DATA(residual)
             for k in xrange(self.data.nz):
                 i = self.data.irn[k] - 1  # Fortran indexing
                 j = self.data.icn[k] - 1
@@ -171,8 +171,8 @@ cdef class BaseMA27Solver_@index@_@type@:
             return x
 
 
-    def refine(self, np.ndarray[@type|generic_to_c_type@, ndim=1] x, np.ndarray[@type|generic_to_c_type@, ndim=1] rhs,
-               np.ndarray[@type|generic_to_c_type@, ndim=1] residual, double tol=1e-8, int nitref=3, *args):
+    def refine(self, np.ndarray[double, ndim=1] x, np.ndarray[double, ndim=1] rhs,
+               np.ndarray[double, ndim=1] residual, double tol=1e-8, int nitref=3, *args):
         """Perform iterative refinement.
 
         If necessary, it performs iterative refinement until the scaled
@@ -198,11 +198,11 @@ cdef class BaseMA27Solver_@index@_@type@:
         new_x = x.copy()
         new_res = residual.copy()
 
-        self.data.residual = <@type|generic_to_c_type@ *> np.PyArray_DATA(new_res)
+        self.data.residual = <double *> np.PyArray_DATA(new_res)
 
         error = Ma27_Refine(self.data,
-                            <@type|generic_to_c_type@ *> np.PyArray_DATA(new_x),
-                            <@type|generic_to_c_type@ *> np.PyArray_DATA(rhs),
+                            <double *> np.PyArray_DATA(new_x),
+                            <double *> np.PyArray_DATA(rhs),
                             self.a,
                             tol,
                             nitref)

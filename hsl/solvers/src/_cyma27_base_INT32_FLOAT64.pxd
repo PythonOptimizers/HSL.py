@@ -29,11 +29,11 @@ cdef extern from "ma27.h":
         int       rank;               # Matrix rank
     
         int       la
-        @type|generic_to_c_type@   *factors             # Matrix factors
+        double   *factors             # Matrix factors
         int       maxfrt
-        @type|generic_to_c_type@   *w                   # Real workspace
+        double   *w                   # Real workspace
     
-        @type|generic_to_c_type@   *residual            # = b - Ax   
+        double   *residual            # = b - Ax   
         char      fetched             # Factors have been fetched
                                       # Used for de-allocation
 
@@ -41,21 +41,20 @@ cdef extern from "ma27.h":
 
     cdef Ma27_Data *Ma27_Initialize( int nz, int n, FILE *logfile )
     cdef int  Ma27_Analyze( Ma27_Data *ma27, int iflag );
-    cdef int  Ma27_Factorize( Ma27_Data *ma27, @type|generic_to_c_type@ A[] );
-    cdef int  Ma27_Solve( Ma27_Data *ma27, @type|generic_to_c_type@ x[] );
-    cdef int  Ma27_Refine( Ma27_Data *ma27, @type|generic_to_c_type@ x[], @type|generic_to_c_type@ rhs[], @type|generic_to_c_type@ A[],
+    cdef int  Ma27_Factorize( Ma27_Data *ma27, double A[] );
+    cdef int  Ma27_Solve( Ma27_Data *ma27, double x[] );
+    cdef int  Ma27_Refine( Ma27_Data *ma27, double x[], double rhs[], double A[],
                            double tol, int maxitref );
     cdef void Ma27_Finalize( Ma27_Data *ma27 );
     cdef int  Process_Error_Code( Ma27_Data *ma27, int error );
 
 
-cdef class BaseMA27Solver_@index@_@type@:
+cdef class BaseMA27Solver_INT32_FLOAT64:
     cdef:
         int n
         int nnz
         Ma27_Data* data
-        @type|generic_to_c_type@* a
+        double* a
         int factorized
 
     cdef index_to_fortran(self)
-

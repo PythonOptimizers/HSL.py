@@ -1,8 +1,0 @@
-from hsl.solvers.src._cyma27_base_@index@_@type@ cimport BaseMA27Solver_@index@_@type@
-
-cimport numpy as cnp
-
-cdef class NumpyMA27Solver_@index@_@type@(BaseMA27Solver_@index@_@type@):
-    cpdef get_matrix_data(self, cnp.ndarray[cnp.@index|lower@_t, ndim=1] arow,
-                                cnp.ndarray[cnp.@index|lower@_t, ndim=1] acol,
-                                cnp.ndarray[cnp.@type|lower@_t, ndim=1] aval)

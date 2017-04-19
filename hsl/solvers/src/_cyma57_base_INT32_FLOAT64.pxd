@@ -23,19 +23,19 @@ cdef extern from "ma57.h":
         int       lkeep               # Pivot sequence
         int      *keep
         int      *iwork               # Wokspace array
-        @type|generic_to_c_type@   *fact                # Matrix factors
+        double   *fact                # Matrix factors
         int       lfact               # Size of array fact
         int      *ifact               # Indexing of factors
         int       lifact              # Size of array ifact
         int       job
         int       nrhs                # Number of rhs
-        @type|generic_to_c_type@   *rhs                 # Right-hand sides
+        double   *rhs                 # Right-hand sides
         int       lrhs                # Leading dim of rhs
-        @type|generic_to_c_type@   *work                # Real workspace
+        double   *work                # Real workspace
         int       lwork               # Size of array work
         int       calledcd            # Flag for MA57DD
-        @type|generic_to_c_type@   *x                   # Solution to Ax=rhs
-        @type|generic_to_c_type@   *residual            # = A x - rhs
+        double   *x                   # Solution to Ax=rhs
+        double   *residual            # = A x - rhs
         char      fetched             # Factors were fetched
                                       # Used for de-allocation
         int       rank, rankdef
@@ -43,31 +43,30 @@ cdef extern from "ma57.h":
 
     cdef Ma57_Data *Ma57_Initialize( int nz, int n, FILE *logfile )
     cdef int  Ma57_Analyze( Ma57_Data *ma57 );
-    cdef int  Ma57_Factorize( Ma57_Data *ma57, @type|generic_to_c_type@ A[] );
-    cdef int  Ma57_Solve( Ma57_Data *ma57, @type|generic_to_c_type@ x[] );
-    cdef int  Ma57_Refine( Ma57_Data *ma57, @type|generic_to_c_type@ x[], @type|generic_to_c_type@ rhs[], @type|generic_to_c_type@ A[],
+    cdef int  Ma57_Factorize( Ma57_Data *ma57, double A[] );
+    cdef int  Ma57_Solve( Ma57_Data *ma57, double x[] );
+    cdef int  Ma57_Refine( Ma57_Data *ma57, double x[], double rhs[], double A[],
                            int maxitref, int job );
     cdef void Ma57_Finalize(      Ma57_Data *ma57 );
     cdef int  Process_Error_Code( Ma57_Data *ma57, int nerror );
 
 
-cdef class BaseMA57Solver_@index@_@type@:
+cdef class BaseMA57Solver_INT32_FLOAT64:
     cdef:
         int n
         int nnz
         Ma57_Data* data
-        @type|generic_to_c_type@* a
-        @type|generic_to_c_type@* x
-        @type|generic_to_c_type@* residual
+        double* a
+        double* x
+        double* residual
         int factorized
-        @type|generic_to_c_type@ cond
-        @type|generic_to_c_type@ cond2
-        @type|generic_to_c_type@ berr
-        @type|generic_to_c_type@ berr2
-        @type|generic_to_c_type@ dirError
-        @type|generic_to_c_type@ matNorm
-        @type|generic_to_c_type@ xNorm
-        @type|generic_to_c_type@ relRes
+        double cond
+        double cond2
+        double berr
+        double berr2
+        double dirError
+        double matNorm
+        double xNorm
+        double relRes
 
     cdef index_to_fortran(self)
-

@@ -1,0 +1,6 @@
+from cysparse.sparse.ll_mat_matrices.ll_mat_INT32_t_FLOAT64_t cimport LLSparseMatrix_INT32_t_FLOAT64_t
+
+from hsl.solvers.src._cyma27_base_INT32_FLOAT64 cimport BaseMA27Solver_INT32_FLOAT64
+
+cdef class CySparseMA27Solver_INT32_FLOAT64(BaseMA27Solver_INT32_FLOAT64):
+    cpdef get_matrix_data(self, LLSparseMatrix_INT32_t_FLOAT64_t A)

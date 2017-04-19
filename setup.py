@@ -223,99 +223,83 @@ else:
     ext_params['extra_link_args'] = ["-g"]
 
 context_ext_params = copy.deepcopy(ext_params)
-{% for index_type in index_list %}
-  {% for element_type in type_list %}
 if files_exist(ma27_sources):
-    cyma27_src_@index_type@_@element_type@ = ['ma27_lib.c',
+    cyma27_src_INT32_FLOAT64 = ['ma27_lib.c',
                                               'hsl_alloc.c',
-                                              '_cyma27_base_@index_type@_@element_type@.c']
-    cyma27_sources_@index_type@_@element_type@ = [os.path.join('hsl', 'solvers', 'src', name) for name in cyma27_src_@index_type@_@element_type@]
+                                              '_cyma27_base_INT32_FLOAT64.c']
+    cyma27_sources_INT32_FLOAT64 = [os.path.join('hsl', 'solvers', 'src', name) for name in cyma27_src_INT32_FLOAT64]
 
-    cyma27_base_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-    cyma27_base_ext_params_@index_type@_@element_type@['libraries'] = ['hsl_ma27']
+    cyma27_base_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
+    cyma27_base_ext_params_INT32_FLOAT64['libraries'] = ['hsl_ma27']
     retval = os.getcwd()
     os.chdir('hsl/solvers/src')
-    call(['cython', '_cyma27_base_@index_type@_@element_type@.pyx'])
+    call(['cython', '_cyma27_base_INT32_FLOAT64.pyx'])
     os.chdir(retval)
-    config.add_extension(name='solvers.src._cyma27_base_@index_type@_@element_type@',
-                         sources=cyma27_sources_@index_type@_@element_type@,
-                         **cyma27_base_ext_params_@index_type@_@element_type@)
+    config.add_extension(name='solvers.src._cyma27_base_INT32_FLOAT64',
+                         sources=cyma27_sources_INT32_FLOAT64,
+                         **cyma27_base_ext_params_INT32_FLOAT64)
 
     retval = os.getcwd()
     os.chdir('hsl/solvers/src')
-    call(['cython', '_cyma27_numpy_@index_type@_@element_type@.pyx'])
+    call(['cython', '_cyma27_numpy_INT32_FLOAT64.pyx'])
     os.chdir(retval)
-    cyma27_numpy_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-    config.add_extension(name="solvers.src._cyma27_numpy_@index_type@_@element_type@",
-                         sources=['hsl/solvers/src/_cyma27_numpy_@index_type@_@element_type@.c'],
-                         **cyma27_numpy_ext_params_@index_type@_@element_type@)
-
-  {% endfor %}
-{% endfor %}
+    cyma27_numpy_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
+    config.add_extension(name="solvers.src._cyma27_numpy_INT32_FLOAT64",
+                         sources=['hsl/solvers/src/_cyma27_numpy_INT32_FLOAT64.c'],
+                         **cyma27_numpy_ext_params_INT32_FLOAT64)
 
 
-{% for index_type in index_list %}
-  {% for element_type in type_list %}
+
 if files_exist(ma57_sources):
-    cyma57_src_@index_type@_@element_type@ = ['ma57_lib.c',
+    cyma57_src_INT32_FLOAT64 = ['ma57_lib.c',
                                               'hsl_alloc.c',
-                                              '_cyma57_base_@index_type@_@element_type@.c']
-    cyma57_sources_@index_type@_@element_type@ = [os.path.join('hsl', 'solvers', 'src', name) for name in cyma57_src_@index_type@_@element_type@]
+                                              '_cyma57_base_INT32_FLOAT64.c']
+    cyma57_sources_INT32_FLOAT64 = [os.path.join('hsl', 'solvers', 'src', name) for name in cyma57_src_INT32_FLOAT64]
 
-    base_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-    base_ext_params_@index_type@_@element_type@['library_dirs'] = [metis_dir]
-    base_ext_params_@index_type@_@element_type@['libraries'] = [metis_lib, 'hsl_ma57']
+    base_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
+    base_ext_params_INT32_FLOAT64['library_dirs'] = [metis_dir]
+    base_ext_params_INT32_FLOAT64['libraries'] = [metis_lib, 'hsl_ma57']
     retval = os.getcwd()
     os.chdir('hsl/solvers/src')
-    call(['cython', '_cyma57_base_@index_type@_@element_type@.pyx'])
+    call(['cython', '_cyma57_base_INT32_FLOAT64.pyx'])
     os.chdir(retval)
     config.add_extension(
-                name='solvers.src._cyma57_base_@index_type@_@element_type@',
-                sources=cyma57_sources_@index_type@_@element_type@,
-                **base_ext_params_@index_type@_@element_type@)
+                name='solvers.src._cyma57_base_INT32_FLOAT64',
+                sources=cyma57_sources_INT32_FLOAT64,
+                **base_ext_params_INT32_FLOAT64)
 
     retval = os.getcwd()
     os.chdir('hsl/solvers/src')
-    call(['cython', '_cyma57_numpy_@index_type@_@element_type@.pyx'])
+    call(['cython', '_cyma57_numpy_INT32_FLOAT64.pyx'])
     os.chdir(retval)
-    numpy_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-    config.add_extension(name="solvers.src._cyma57_numpy_@index_type@_@element_type@",
-                     sources=['hsl/solvers/src/_cyma57_numpy_@index_type@_@element_type@.c'],
-                     **numpy_ext_params_@index_type@_@element_type@)
+    numpy_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
+    config.add_extension(name="solvers.src._cyma57_numpy_INT32_FLOAT64",
+                     sources=['hsl/solvers/src/_cyma57_numpy_INT32_FLOAT64.c'],
+                     **numpy_ext_params_INT32_FLOAT64)
 
-  {% endfor %}
-{% endfor %}
 
 if build_cysparse_ext:
-{% for index_type in index_list %}
-  {% for element_type in type_list %}
     if files_exist(ma27_sources):
         retval = os.getcwd()
         os.chdir('hsl/solvers/src')
-        call(['cython', '-I', cysparse_rootdir[0], '_cyma27_cysparse_@index_type@_@element_type@.pyx'])
+        call(['cython', '-I', cysparse_rootdir[0], '_cyma27_cysparse_INT32_FLOAT64.pyx'])
         os.chdir(retval)
-        cyma27_cysparse_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-        cyma27_cysparse_ext_params_@index_type@_@element_type@['include_dirs'].extend(cysparse_rootdir)
-        config.add_extension(name="solvers.src._cyma27_cysparse_@index_type@_@element_type@",
-                     sources=['hsl/solvers/src/_cyma27_cysparse_@index_type@_@element_type@.c'],
-                     **cyma27_cysparse_ext_params_@index_type@_@element_type@)
-  {% endfor %}
-{% endfor %}
+        cyma27_cysparse_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
+        cyma27_cysparse_ext_params_INT32_FLOAT64['include_dirs'].extend(cysparse_rootdir)
+        config.add_extension(name="solvers.src._cyma27_cysparse_INT32_FLOAT64",
+                     sources=['hsl/solvers/src/_cyma27_cysparse_INT32_FLOAT64.c'],
+                     **cyma27_cysparse_ext_params_INT32_FLOAT64)
 
-{% for index_type in index_list %}
-  {% for element_type in type_list %}
     if files_exist(ma57_sources):
         retval = os.getcwd()
         os.chdir('hsl/solvers/src')
-        call(['cython', '-I', cysparse_rootdir[0], '_cyma57_cysparse_@index_type@_@element_type@.pyx'])
+        call(['cython', '-I', cysparse_rootdir[0], '_cyma57_cysparse_INT32_FLOAT64.pyx'])
         os.chdir(retval)
-        cyma57_cysparse_ext_params_@index_type@_@element_type@ = copy.deepcopy(ext_params)
-        cyma57_cysparse_ext_params_@index_type@_@element_type@['include_dirs'].extend(cysparse_rootdir)
-        config.add_extension(name="solvers.src._cyma57_cysparse_@index_type@_@element_type@",
-                     sources=['hsl/solvers/src/_cyma57_cysparse_@index_type@_@element_type@.c'],
-                     **cyma57_cysparse_ext_params_@index_type@_@element_type@)
-  {% endfor %}
-{% endfor %}
+        cyma57_cysparse_ext_params_INT32_FLOAT64 = copy.deepcopy(ext_params)
+        cyma57_cysparse_ext_params_INT32_FLOAT64['include_dirs'].extend(cysparse_rootdir)
+        config.add_extension(name="solvers.src._cyma57_cysparse_INT32_FLOAT64",
+                     sources=['hsl/solvers/src/_cyma57_cysparse_INT32_FLOAT64.c'],
+                     **cyma57_cysparse_ext_params_INT32_FLOAT64)
 
 
 packages_list = ['hsl', 'hsl.ordering', 'hsl.scaling', 'hsl.solvers',

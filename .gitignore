@@ -9,16 +9,17 @@ site.cfg
 *.so
 
 # Generated files
-*.pyx
-*.pxd
-*.c
+*.cpx
+*.cpd
+*.cpy
 __pycache__/
 *.py[cod]
 *$py.class
-setup.py
 
 
 # Distribution / packaging
+config/*
+generate_code.py
 release.sh
 .Python
 env/

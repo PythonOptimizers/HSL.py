@@ -17,19 +17,19 @@ cdef extern from "ma57.h":
         int       lkeep               # Pivot sequence
         int      *keep
         int      *iwork               # Wokspace array
-        @type|generic_to_c_type@   *fact                # Matrix factors
+        double   *fact                # Matrix factors
         int       lfact               # Size of array fact
         int      *ifact               # Indexing of factors
         int       lifact              # Size of array ifact
         int       job
         int       nrhs                # Number of rhs
-        @type|generic_to_c_type@   *rhs                 # Right-hand sides
+        double   *rhs                 # Right-hand sides
         int       lrhs                # Leading dim of rhs
-        @type|generic_to_c_type@   *work                # Real workspace
+        double   *work                # Real workspace
         int       lwork               # Size of array work
         int       calledcd            # Flag for MA57DD
-        @type|generic_to_c_type@   *x                   # Solution to Ax=rhs
-        @type|generic_to_c_type@   *residual            # = A x - rhs
+        double   *x                   # Solution to Ax=rhs
+        double   *residual            # = A x - rhs
         char      fetched             # Factors were fetched
                                       # Used for de-allocation
         int       rank, rankdef
@@ -37,23 +37,23 @@ cdef extern from "ma57.h":
 
     cdef Ma57_Data *Ma57_Initialize( int nz, int n, FILE *logfile )
     cdef int  Ma57_Analyze( Ma57_Data *ma57 );
-    cdef int  Ma57_Factorize( Ma57_Data *ma57, @type|generic_to_c_type@ A[] );
-    cdef int  Ma57_Solve( Ma57_Data *ma57, @type|generic_to_c_type@ x[] );
-    cdef int  Ma57_Refine( Ma57_Data *ma57, @type|generic_to_c_type@ x[], @type|generic_to_c_type@ rhs[], @type|generic_to_c_type@ A[],
+    cdef int  Ma57_Factorize( Ma57_Data *ma57, double A[] );
+    cdef int  Ma57_Solve( Ma57_Data *ma57, double x[] );
+    cdef int  Ma57_Refine( Ma57_Data *ma57, double x[], double rhs[], double A[],
                            int maxitref, int job );
     cdef void Ma57_Finalize(      Ma57_Data *ma57 );
     cdef int  Process_Error_Code( Ma57_Data *ma57, int nerror );
 
 
-cdef c_to_fortran_index_array(@index|generic_to_c_type@ * a, @index|generic_to_c_type@ a_size):
+cdef c_to_fortran_index_array(int * a, int a_size):
     cdef:
-        @index|generic_to_c_type@ i
+        int i
 
     for i from 0 <= i < a_size:
         a[i] += 1
 
 
-cdef class BaseMA57Solver_@index@_@type@:
+cdef class BaseMA57Solver_INT32_FLOAT64:
     def __cinit__(self, int m, int n, int nnz, bint sqd=False, verbose=False):
         cdef int elem, i, k
 
@@ -64,7 +64,7 @@ cdef class BaseMA57Solver_@index@_@type@:
 
         self.data = Ma57_Initialize(self.nnz, self.n, NULL)
 
-        self.a = <@type|generic_to_c_type@ *> PyMem_Malloc(self.nnz * sizeof(@type|generic_to_c_type@))
+        self.a = <double *> PyMem_Malloc(self.nnz * sizeof(double))
 
         # Set pivot-for-stability threshold if matrix is SQD
         if sqd:
@@ -143,7 +143,7 @@ cdef class BaseMA57Solver_@index@_@type@:
         self.data.rankdef = True if (self.data.rank < self.data.n) else False
         return
 
-    def solve(self, np.ndarray[@type|generic_to_c_type@, ndim=1] rhs, bint get_resid):
+    def solve(self, np.ndarray[double, ndim=1] rhs, bint get_resid):
         """
         solve(b) solves the linear system of equations Ax = b.
         The solution will be found in self.x and residual in
@@ -160,10 +160,10 @@ cdef class BaseMA57Solver_@index@_@type@:
         # When residual is requested, we need to call Refine instead of Solve
         if get_resid:
             residual = rhs.copy()
-            self.data.residual = <@type|generic_to_c_type@ *> np.PyArray_DATA(residual)
+            self.data.residual = <double *> np.PyArray_DATA(residual)
             error = Ma57_Refine(self.data,
-                                <@type|generic_to_c_type@ *> np.PyArray_DATA(x),
-                                <@type|generic_to_c_type@ *> np.PyArray_DATA(rhs),
+                                <double *> np.PyArray_DATA(x),
+                                <double *> np.PyArray_DATA(rhs),
                                 self.a,
                                 1,
                                 0)
@@ -173,14 +173,14 @@ cdef class BaseMA57Solver_@index@_@type@:
             return (x, residual)
 
         else: 
-            error = Ma57_Solve(self.data, <@type|generic_to_c_type@ *> np.PyArray_DATA(x))
+            error = Ma57_Solve(self.data, <double *> np.PyArray_DATA(x))
             if error:
                 raise RuntimeError("Error return code from Solve: %-d\n", error)
             return x
 
 
-    def refine(self, np.ndarray[@type|generic_to_c_type@, ndim=1] x, np.ndarray[@type|generic_to_c_type@, ndim=1] rhs,
-               np.ndarray[@type|generic_to_c_type@, ndim=1] residual, int nitref=3, *args):
+    def refine(self, np.ndarray[double, ndim=1] x, np.ndarray[double, ndim=1] rhs,
+               np.ndarray[double, ndim=1] residual, int nitref=3, *args):
         """
         refine performs iterative refinement if necessary
         until the scaled residual norm ||b-Ax||/(1+||b||) falls below a threshold 'tol'
@@ -203,11 +203,11 @@ cdef class BaseMA57Solver_@index@_@type@:
 
         new_x = x.copy()
         new_res = residual.copy()
-        self.data.residual = <@type|generic_to_c_type@ *> np.PyArray_DATA(new_res)
+        self.data.residual = <double *> np.PyArray_DATA(new_res)
 
         error = Ma57_Refine(self.data,
-                            <@type|generic_to_c_type@ *> np.PyArray_DATA(new_x),
-                            <@type|generic_to_c_type@ *> np.PyArray_DATA(rhs),
+                            <double *> np.PyArray_DATA(new_x),
+                            <double *> np.PyArray_DATA(rhs),
                             self.a,
                             nitref,
                             2)
